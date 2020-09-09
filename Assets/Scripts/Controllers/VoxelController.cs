@@ -50,18 +50,22 @@ public class VoxelController : MonoBehaviour
     }
     // Start is called before the first frame update
 
-    public void SetMesh(Mesh mesh, bool offsetPosition = false)
+    public void SetMesh(Mesh mesh, float voxelSize, bool offsetPosition = false)
     {
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
 
         Vector3[] newVertices = new Vector3[mesh.vertices.Length];
 
+        float halfVoxelSize = voxelSize / 2;
+
+        Vector3 globalMeshOffset = new Vector3(halfVoxelSize, halfVoxelSize, halfVoxelSize);
+
         if(offsetPosition)
         { 
             for (int i = 0; i < mesh.vertices.Length; ++i)
             {
-                newVertices[i] = mesh.vertices[i] - transform.localPosition;
+                newVertices[i] = mesh.vertices[i] - transform.localPosition - globalMeshOffset;
             }
 
             mesh.vertices = newVertices;
@@ -76,10 +80,14 @@ public class VoxelController : MonoBehaviour
         }
         mesh.uv = uvs;
 
+        mesh.RecalculateNormals();
+
         meshFilter.mesh = mesh;
         meshFilter.sharedMesh = mesh;
 
         meshRenderer.material.color = Color.white;
+
+
     }
 
     void Start()

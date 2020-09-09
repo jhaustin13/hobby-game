@@ -72,7 +72,7 @@ public class ChunkController : MonoBehaviour
                     voxelDatas[6] = Voxels[x + 1, y + 1, z].GetVoxelData();
                     voxelDatas[7] = Voxels[x, y + 1, z].GetVoxelData();
 
-                    Voxels[x, y, z].SetMesh(MeshHelper.ConvertSkeletonToMesh(MarchingCubesHelper.GetTriangles(voxelDatas)), true);                                 
+                    Voxels[x, y, z].SetMesh(MeshHelper.ConvertSkeletonToMesh(MarchingCubesHelper.GetTriangles(voxelDatas)), VoxelSize, true);                                 
                 }
             }
         }
