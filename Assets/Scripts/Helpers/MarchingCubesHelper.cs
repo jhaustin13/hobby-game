@@ -303,54 +303,54 @@ public class MarchingCubesHelper
         0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
         0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   };
 
-    public static MeshSkeleton GetTriangles(List<VoxelData> vPoints)
+    public static MeshSkeleton GetTriangles(List<VoxelController> vPoints)
     {
         MeshSkeleton meshSkeleton = new MeshSkeleton();
         int cubeIndex = 0;
         Vector3[] verts = new Vector3[12];
-
+        ChunkController homeChunk = vPoints[3].GetComponentInParent<ChunkController>();
         if (vPoints.Count != 8)
         {
             Debug.Log("Not sending 8 voxels to get its mesh generated!");
         }
 
-        if (vPoints[0].State < 1) cubeIndex |= 1;
-        if (vPoints[1].State < 1) cubeIndex |= 2;
-        if (vPoints[2].State < 1) cubeIndex |= 4;
-        if (vPoints[3].State < 1) cubeIndex |= 8;
-        if (vPoints[4].State < 1) cubeIndex |= 16;
-        if (vPoints[5].State < 1) cubeIndex |= 32;
-        if (vPoints[6].State < 1) cubeIndex |= 64;
-        if (vPoints[7].State < 1) cubeIndex |= 128;
+        if (vPoints[0].GetVoxelData().State < 1) cubeIndex |= 1;
+        if (vPoints[1].GetVoxelData().State < 1) cubeIndex |= 2;
+        if (vPoints[2].GetVoxelData().State < 1) cubeIndex |= 4;
+        if (vPoints[3].GetVoxelData().State < 1) cubeIndex |= 8;
+        if (vPoints[4].GetVoxelData().State < 1) cubeIndex |= 16;
+        if (vPoints[5].GetVoxelData().State < 1) cubeIndex |= 32;
+        if (vPoints[6].GetVoxelData().State < 1) cubeIndex |= 64;
+        if (vPoints[7].GetVoxelData().State < 1) cubeIndex |= 128;
 
         //Voxel cube is all air or filled
         if (EdgeTable[cubeIndex] == 0)
             return meshSkeleton;
 
         if ((EdgeTable[cubeIndex] & 1) > 0)
-            verts[0] = GetMidpoint(vPoints[0].Position, vPoints[1].Position);        
+            verts[0] = GetMidpoint(vPoints[0], vPoints[1], homeChunk);        
         if ((EdgeTable[cubeIndex] & 2) > 0)
-            verts[1] = GetMidpoint(vPoints[1].Position, vPoints[2].Position);       
+            verts[1] = GetMidpoint(vPoints[1], vPoints[2], homeChunk);       
         if ((EdgeTable[cubeIndex] & 4) > 0)
-            verts[2] = GetMidpoint(vPoints[2].Position, vPoints[3].Position);        
+            verts[2] = GetMidpoint(vPoints[2], vPoints[3], homeChunk);        
         if ((EdgeTable[cubeIndex] & 8) > 0)
-            verts[3] = GetMidpoint(vPoints[3].Position, vPoints[0].Position);        
+            verts[3] = GetMidpoint(vPoints[3], vPoints[0], homeChunk);        
         if ((EdgeTable[cubeIndex] & 16) > 0)
-            verts[4] = GetMidpoint(vPoints[4].Position, vPoints[5].Position);        
+            verts[4] = GetMidpoint(vPoints[4], vPoints[5], homeChunk);        
         if ((EdgeTable[cubeIndex] & 32) > 0)
-            verts[5] = GetMidpoint(vPoints[5].Position, vPoints[6].Position);        
+            verts[5] = GetMidpoint(vPoints[5], vPoints[6], homeChunk);        
         if ((EdgeTable[cubeIndex] & 64) > 0)
-            verts[6] = GetMidpoint(vPoints[6].Position, vPoints[7].Position);        
+            verts[6] = GetMidpoint(vPoints[6], vPoints[7], homeChunk);        
         if ((EdgeTable[cubeIndex] & 128) > 0)
-            verts[7] = GetMidpoint(vPoints[7].Position, vPoints[4].Position);        
+            verts[7] = GetMidpoint(vPoints[7], vPoints[4], homeChunk);        
         if ((EdgeTable[cubeIndex] & 256) > 0)
-            verts[8] = GetMidpoint(vPoints[0].Position, vPoints[4].Position);        
+            verts[8] = GetMidpoint(vPoints[0], vPoints[4], homeChunk);        
         if ((EdgeTable[cubeIndex] & 512) > 0)
-            verts[9] = GetMidpoint(vPoints[1].Position, vPoints[5].Position);        
+            verts[9] = GetMidpoint(vPoints[1], vPoints[5], homeChunk);        
         if ((EdgeTable[cubeIndex] & 1024) > 0)
-            verts[10] = GetMidpoint(vPoints[2].Position, vPoints[6].Position);        
+            verts[10] = GetMidpoint(vPoints[2], vPoints[6], homeChunk);        
         if ((EdgeTable[cubeIndex] & 2048) > 0)
-            verts[11] = GetMidpoint(vPoints[3].Position, vPoints[7].Position);       
+            verts[11] = GetMidpoint(vPoints[3], vPoints[7], homeChunk);       
 
         /* Create the triangle */
 
@@ -378,8 +378,20 @@ public class MarchingCubesHelper
         return meshSkeleton;
     }
 
-    private static Vector3 GetMidpoint(Vector3 p1, Vector3 p2)
+    private static Vector3 GetMidpoint(VoxelController v1, VoxelController v2, ChunkController homeChunk)
     {
-        return (p1 + p2) / 2;
+        ChunkController v1ChunkParent = v1.GetComponentInParent<ChunkController>();
+        ChunkController v2ChunkParent = v2.GetComponentInParent<ChunkController>();
+
+
+        if (v1ChunkParent == homeChunk && v2ChunkParent == homeChunk)
+        {            
+            return (v1.transform.localPosition + v2.transform.localPosition) / 2;
+        }
+        else
+        {
+            return Vector3.MoveTowards(v1.transform.position, v2.transform.position, Vector3.Distance(v1.transform.position, v2.transform.position) / 2) - homeChunk.transform.position;
+        }
+
     }
 }

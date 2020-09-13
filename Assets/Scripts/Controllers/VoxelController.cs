@@ -64,7 +64,7 @@ public class VoxelController : MonoBehaviour
         if(offsetPosition)
         { 
             for (int i = 0; i < mesh.vertices.Length; ++i)
-            {
+            {                
                 newVertices[i] = mesh.vertices[i] - transform.localPosition - globalMeshOffset;
             }
 

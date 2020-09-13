@@ -83,7 +83,7 @@ public class WorldController : MonoBehaviour
                         voxelController.RefreshState(0);
                     }
 
-                    chunkController.RefreshChunkMesh();
+                    chunkController.RefreshChunkMesh(voxelController);
                 }
             }
         }
@@ -202,12 +202,12 @@ public class WorldController : MonoBehaviour
 
                     if (adjChunk != null)
                     {
-                        adjChunk.RefreshChunkMesh();
+                        adjChunk.RefreshChunkMesh(adjVoxel);
                         //chunkController.RefreshChunkMesh();
                     }
                     else
                     {
-                        chunkController.RefreshChunkMesh();
+                        chunkController.RefreshChunkMesh(adjVoxel);
                     }
                 }
             }
