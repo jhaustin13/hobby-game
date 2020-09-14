@@ -34,17 +34,20 @@ public class VoxelController : MonoBehaviour
     public void RefreshState(int voxelState)
     {       
 
-        switch (voxelState)
+        if(debug)
         {
-            case 0:
-                debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.white;
-                GetComponent<BoxCollider>().enabled = false;
-                break;
-            case 1:
-                debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.black;
-                GetComponent<BoxCollider>().enabled = true;
-                break;
-        }
+            switch (voxelState)
+            {
+                case 0:
+                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.white;
+                    GetComponent<BoxCollider>().enabled = false;
+                    break;
+                case 1:
+                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.black;
+                    GetComponent<BoxCollider>().enabled = true;
+                    break;
+            }
+        }        
 
         voxelData.State = voxelState;
     }

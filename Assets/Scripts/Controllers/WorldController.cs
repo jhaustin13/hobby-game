@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class WorldController : MonoBehaviour
 {
-    public int Size;
+    public int SizeX;
+    public int SizeY;
+    public int SizeZ;
 
     public GameObject chunkPrefab;
 
     private int selectedState = 0;
 
     public ChunkController[,,] Chunks;
+
+    public FastNoise FastNoise;
 
     private enum VFace
     {
@@ -25,13 +29,16 @@ public class WorldController : MonoBehaviour
 
     void Awake()
     {
-        Chunks = new ChunkController[Size, Size, Size];
+        FastNoise = new FastNoise();
+        //FastNoise.SetFrequency(100);
+        
+        Chunks = new ChunkController[SizeX, SizeY, SizeZ];
 
-        for (int y = 0; y < Size; ++y)
+        for (int y = 0; y < SizeY; ++y)
         {
-            for (int z = 0; z < Size; ++z)
+            for (int z = 0; z < SizeZ; ++z)
             {
-                for (int x = 0; x < Size; ++x)
+                for (int x = 0; x < SizeX; ++x)
                 {
                     GameObject newChunk = Instantiate(chunkPrefab);
                     ChunkController chunkController = newChunk.GetComponent<ChunkController>();
@@ -44,6 +51,8 @@ public class WorldController : MonoBehaviour
                     chunkController.Initialize();
 
                     Chunks[x, y, z] = chunkController;
+
+                    chunkController.SetChunkVoxelTerrain();
                 }
             }
         }
@@ -207,7 +216,10 @@ public class WorldController : MonoBehaviour
                     }
                     else
                     {
-                        chunkController.RefreshChunkMesh(adjVoxel);
+                        if(adjChunk != null)
+                        {
+                            chunkController.RefreshChunkMesh(adjVoxel);
+                        }                        
                     }
                 }
             }
@@ -219,9 +231,9 @@ public class WorldController : MonoBehaviour
         Coordinate chunkIdx = GetChunkIndex(originChunk);
 
         //TODO check if chunk with offset exists in the world
-        if ((chunkIdx.X + offset.X >= 0 && chunkIdx.X + offset.X < Size)
-            && (chunkIdx.Y + offset.Y >= 0 && chunkIdx.Y + offset.Y < Size)
-            && (chunkIdx.Z + offset.Z >= 0 && chunkIdx.Z + offset.Z < Size))
+        if ((chunkIdx.X + offset.X >= 0 && chunkIdx.X + offset.X < SizeX)
+            && (chunkIdx.Y + offset.Y >= 0 && chunkIdx.Y + offset.Y < SizeY)
+            && (chunkIdx.Z + offset.Z >= 0 && chunkIdx.Z + offset.Z < SizeZ))
         {
             return Chunks[chunkIdx.X + offset.X, chunkIdx.Y + offset.Y, chunkIdx.Z + offset.Z];
         }
