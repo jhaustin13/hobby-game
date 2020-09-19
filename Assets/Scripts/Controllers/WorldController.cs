@@ -79,7 +79,7 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonUp(0))
         { //Break voxel
             RaycastHit hitInfo;
 
@@ -91,7 +91,6 @@ public class WorldController : MonoBehaviour
                     VoxelController voxelController = voxel.GetComponent<VoxelController>();
 
                     ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
-
 
                     List<VoxelController> voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController);
 
@@ -105,7 +104,7 @@ public class WorldController : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetMouseButton(1))
+        else if (Input.GetMouseButtonUp(1))
         { //Place voxel
             RaycastHit hitInfo;
 
@@ -116,120 +115,16 @@ public class WorldController : MonoBehaviour
                     GameObject voxel = hitInfo.collider.gameObject;
                     VoxelController voxelController = voxel.GetComponent<VoxelController>();
 
-                    VFace face = GetHitFace(hitInfo);
-
                     ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
 
-                    Coordinate vIndex = chunkController.GetVoxelIndex(voxelController);
+                    var voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController);
 
-                    int Xidx = vIndex.X;
-                    int Yidx = vIndex.Y;
-                    int Zidx = vIndex.Z;
-
-                    VoxelController adjVoxel = null;
-                    ChunkController adjChunk = null;
-
-                    switch (face)
+                    foreach(var v in voxels)
                     {
-                        case VFace.Up:
-                            if (Yidx + 1 >= chunkController.Resolution)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 1, 0));
-
-                                adjVoxel = adjChunk?.Voxels[Xidx, Yidx + 1 - chunkController.Resolution, Zidx];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx, Yidx + 1, Zidx];
-                            }
-
-                            break;
-                        case VFace.Down:
-                            if (Yidx - 1 < 0)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, -1, 0));
-
-                                adjVoxel = adjChunk?.Voxels[Xidx, chunkController.Resolution + Yidx - 1, Zidx];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx, Yidx - 1, Zidx];
-                            }
-
-                            break;
-                        case VFace.North:
-                            if (Zidx + 1 >= chunkController.Resolution)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 0, 1));
-
-                                adjVoxel = adjChunk?.Voxels[Xidx, Yidx, Zidx + 1 - chunkController.Resolution];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx, Yidx, Zidx + 1];
-                            }
-
-                            break;
-                        case VFace.South:
-                            if (Zidx - 1 < 0)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 0, -1));
-
-                                adjVoxel = adjChunk?.Voxels[Xidx, Yidx, chunkController.Resolution + Zidx - 1];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx, Yidx, Zidx - 1];
-                            }
-
-                            break;
-                        case VFace.East:
-                            if (Xidx + 1 >= chunkController.Resolution)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(1, 0, 0));
-
-                                adjVoxel = adjChunk?.Voxels[Xidx + 1 - chunkController.Resolution, Yidx, Zidx];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx + 1, Yidx, Zidx];
-                            }
-
-                            break;
-                        case VFace.West:
-                            if (Xidx - 1 < 0)
-                            {
-                                adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(-1, 0, 0));
-
-                                adjVoxel = adjChunk?.Voxels[chunkController.Resolution + Xidx - 1, Yidx, Zidx];
-                            }
-                            else
-                            {
-                                adjVoxel = chunkController.Voxels[Xidx - 1, Yidx, Zidx];
-                            }
-
-                            break;
-                        case VFace.None:
-                            break;
+                        v.RefreshState(1);
                     }
 
-                    if (adjVoxel != null && adjVoxel.GetVoxelData().State == 0)
-                    {
-                        adjVoxel.RefreshState(1);
-                    }
-
-                    if (adjChunk != null)
-                    {
-                        adjChunk.RefreshChunkMesh(adjVoxel);
-                        //chunkController.RefreshChunkMesh();
-                    }
-                    else
-                    {
-                        if (chunkController != null && adjVoxel != null)
-                        {
-                            chunkController.RefreshChunkMesh(adjVoxel);
-                        }
-                    }
+                    chunkController.RefreshChunkMesh(voxelController);                  
                 }
             }
         }

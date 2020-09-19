@@ -54,7 +54,6 @@ public class ChunkController : MonoBehaviour
 
         Coordinate voxelCoordinates = GetVoxelIndex(voxelController);
 
-
         //Also need to fix if a target voxel is on an edge, currently it doesn't update voxels on the negative edge because of code below
         //Will need more elegant solution
         int startX = voxelCoordinates.X - 1;
@@ -98,7 +97,6 @@ public class ChunkController : MonoBehaviour
         {
             voxelControllers.Add(null);
         }
-
         
         ChunkController startHomeChunk = homeChunk;
 
@@ -107,11 +105,8 @@ public class ChunkController : MonoBehaviour
         int endZ = startZ + 3;
         for (int y = startY; y < endY; ++y)
         {
-            //int endZ = startZ + 3;
             for (int z = startZ; z < endZ; ++z)
             {
-                //int endX = startX + 3;
-                //homeChunk = startHomeChunk;
                 for (int x = startX; x < endX; ++x)
                 {
                     homeChunk = startHomeChunk;
@@ -140,7 +135,6 @@ public class ChunkController : MonoBehaviour
 
                         tempX = x;
                         x -= Resolution;
-                        //endX -= Resolution;
                     }
 
                     if (y >= Resolution)
@@ -158,7 +152,6 @@ public class ChunkController : MonoBehaviour
 
                         tempY = y;
                         y -= Resolution;
-                        //endY -= Resolution;
                     }
 
                     if (z >= Resolution)
@@ -175,10 +168,7 @@ public class ChunkController : MonoBehaviour
                         homeChunk = zChunk;
                         tempZ = z;
                         z -= Resolution;
-                        //endZ -= Resolution;
                     }
-
-
 
                     if (z + 1 >= Resolution && y + 1 >= Resolution && x + 1 >= Resolution)
                     {
