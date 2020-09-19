@@ -61,10 +61,15 @@
     <Compile Include="Assets\Scripts\Helpers\MeshHelper.cs" />
     <Compile Include="Assets\Scripts\Data\MeshSkeleton.cs" />
     <Compile Include="Assets\Scripts\Controllers\WorldController.cs" />
+    <Compile Include="Assets\Scripts\FastNoise\FastNoise.cs" />
     <Compile Include="Assets\Scripts\Data\VoxelData.cs" />
     <Compile Include="Assets\Scripts\Helpers\MarchingCubesHelper.cs" />
     <Compile Include="Assets\Scripts\Data\ChunkData.cs" />
-    <Compile Include="Assets\Scripts\FastNoise\FastNoise.cs" />
+    <Compile Include="Assets\Scripts\Controllers\FlyCameraController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\BirdsEyeCameraController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\FirstPersonController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\Interactable.cs" />
+    <Compile Include="Assets\Scripts\Controllers\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

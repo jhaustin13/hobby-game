@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//TODO LIST:
+//Fix voxel interaction to work without debug spheres
+
+//Try to make voxels disabled when they are not at the edge of the mesh to make it more efficient (this is done... ish)
 public class WorldController : MonoBehaviour
 {
     public int SizeX;
@@ -31,7 +36,7 @@ public class WorldController : MonoBehaviour
     {
         FastNoise = new FastNoise();
         //FastNoise.SetFrequency(100);
-        
+
         Chunks = new ChunkController[SizeX, SizeY, SizeZ];
 
         for (int y = 0; y < SizeY; ++y)
@@ -87,10 +92,14 @@ public class WorldController : MonoBehaviour
 
                     ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
 
-                    if (voxelController.GetVoxelData().State == 1)
+
+                    List<VoxelController> voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController);
+
+                    foreach(var v in voxels)
                     {
-                        voxelController.RefreshState(0);
-                    }
+                        v.RefreshState(0);
+                    }                   
+
 
                     chunkController.RefreshChunkMesh(voxelController);
                 }
@@ -216,10 +225,10 @@ public class WorldController : MonoBehaviour
                     }
                     else
                     {
-                        if(adjChunk != null)
+                        if (chunkController != null && adjVoxel != null)
                         {
                             chunkController.RefreshChunkMesh(adjVoxel);
-                        }                        
+                        }
                     }
                 }
             }
@@ -241,7 +250,69 @@ public class WorldController : MonoBehaviour
         {
             return null;
         }
-        
+
+    }
+
+    private List<VoxelController> GetAllRelatedVoxels(VoxelController voxel)
+    {
+        ChunkController chunkController = voxel.GetComponentInParent<ChunkController>();
+
+        Coordinate vIndex = chunkController.GetVoxelIndex(voxel);
+
+        List<VoxelController> resultVoxels = new List<VoxelController>();
+        resultVoxels.Add(voxel);
+
+        int Xidx = vIndex.X;
+        int Yidx = vIndex.Y;
+        int Zidx = vIndex.Z;
+
+        VoxelController adjVoxel = null;
+        ChunkController adjChunk = null;
+
+        if (Yidx + 1 >= chunkController.Resolution)
+        {
+            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 1, 0));
+
+            if (adjChunk != null)
+            {
+                resultVoxels.Add(adjChunk.Voxels[Xidx, Yidx + 1 - chunkController.Resolution, Zidx]);
+            }
+        }
+        else
+        {
+            resultVoxels.Add(chunkController.Voxels[Xidx, Yidx + 1, Zidx]);
+        }      
+
+        if (Zidx + 1 >= chunkController.Resolution)
+        {
+            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 0, 1));
+
+            if (adjChunk != null)
+            {
+                resultVoxels.Add(adjChunk.Voxels[Xidx, Yidx, Zidx + 1 - chunkController.Resolution]);
+            }
+        }
+        else
+        {
+            resultVoxels.Add(chunkController.Voxels[Xidx, Yidx, Zidx + 1]);
+        }      
+
+
+        if (Xidx + 1 >= chunkController.Resolution)
+        {
+            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(1, 0, 0));
+
+            if (adjChunk != null)
+            {
+                resultVoxels.Add(adjChunk.Voxels[Xidx + 1 - chunkController.Resolution, Yidx, Zidx]);
+            }
+        }
+        else
+        {
+            resultVoxels.Add(chunkController.Voxels[Xidx + 1, Yidx, Zidx]);
+        }       
+
+        return resultVoxels;
     }
 
     private VFace GetHitFace(RaycastHit hit)

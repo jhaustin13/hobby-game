@@ -39,12 +39,10 @@ public class VoxelController : MonoBehaviour
             switch (voxelState)
             {
                 case 0:
-                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.white;
-                    GetComponent<BoxCollider>().enabled = false;
+                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.white;                    
                     break;
                 case 1:
-                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.black;
-                    GetComponent<BoxCollider>().enabled = true;
+                    debugPrimitive.GetComponent<MeshRenderer>().material.color = Color.black;                    
                     break;
             }
         }        
@@ -57,6 +55,7 @@ public class VoxelController : MonoBehaviour
     {
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        MeshCollider meshCollider = GetComponent<MeshCollider>();
 
         Vector3[] newVertices = new Vector3[mesh.vertices.Length];
 
@@ -84,7 +83,9 @@ public class VoxelController : MonoBehaviour
         mesh.uv = uvs;
 
         mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
 
+        meshCollider.sharedMesh = mesh;
         meshFilter.mesh = mesh;
         meshFilter.sharedMesh = mesh;
 
