@@ -48,21 +48,21 @@ public class BirdsEyeCameraController : MonoBehaviour
         }
 
         //Move camera left or right
-        if (Input.mousePosition.x > Screen.width - edgeScreenBuffer || Input.GetAxis("Horizontal") > 0)
+        if (Input.mousePosition.x > Screen.width - edgeScreenBuffer /* || Input.GetAxis("Horizontal") > 0 */)
         {
             attachedCamera.transform.position += attachedCamera.transform.right * edgeMovementSpeed;
         }
-        else if (Input.mousePosition.x < edgeScreenBuffer || Input.GetAxis("Horizontal") < 0)
+        else if (Input.mousePosition.x < edgeScreenBuffer /* || Input.GetAxis("Horizontal") < 0 */)
         {
             attachedCamera.transform.position -= attachedCamera.transform.right * edgeMovementSpeed;
         }
 
         //Move camera forward or backward
-        if (Input.mousePosition.y > Screen.height - edgeScreenBuffer || Input.GetAxis("Vertical") > 0)
+        if (Input.mousePosition.y > Screen.height - edgeScreenBuffer /* || Input.GetAxis("Vertical") > 0 */)
         {
             attachedCamera.transform.position += Vector3.Cross(Vector3.down, attachedCamera.transform.right) * edgeMovementSpeed;
         }
-        else if (Input.mousePosition.y < edgeScreenBuffer || Input.GetAxis("Vertical") < 0)
+        else if (Input.mousePosition.y < edgeScreenBuffer /* || Input.GetAxis("Vertical") < 0 */)
         {
             attachedCamera.transform.position -= Vector3.Cross(Vector3.down, attachedCamera.transform.right) * edgeMovementSpeed;
         }

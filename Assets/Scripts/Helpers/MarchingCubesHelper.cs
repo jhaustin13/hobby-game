@@ -303,25 +303,25 @@ public class MarchingCubesHelper
         0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
         0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   };
 
-    public static MeshSkeleton GetTriangles(List<VoxelController> vPoints)
+    public static MeshSkeleton GetTriangles(List<VoxelData> vPoints, ChunkData homeChunk)
     {
         MeshSkeleton meshSkeleton = new MeshSkeleton();
         int cubeIndex = 0;
         Vector3[] verts = new Vector3[12];
-        ChunkController homeChunk = vPoints[3].GetComponentInParent<ChunkController>();
+        
         if (vPoints.Count != 8)
         {
             Debug.Log("Not sending 8 voxels to get its mesh generated!");
         }
 
-        if (vPoints[0].GetVoxelData().State < 1) cubeIndex |= 1;
-        if (vPoints[1].GetVoxelData().State < 1) cubeIndex |= 2;
-        if (vPoints[2].GetVoxelData().State < 1) cubeIndex |= 4;
-        if (vPoints[3].GetVoxelData().State < 1) cubeIndex |= 8;
-        if (vPoints[4].GetVoxelData().State < 1) cubeIndex |= 16;
-        if (vPoints[5].GetVoxelData().State < 1) cubeIndex |= 32;
-        if (vPoints[6].GetVoxelData().State < 1) cubeIndex |= 64;
-        if (vPoints[7].GetVoxelData().State < 1) cubeIndex |= 128;
+        if (vPoints[0].State < 1) cubeIndex |= 1;
+        if (vPoints[1].State < 1) cubeIndex |= 2;
+        if (vPoints[2].State < 1) cubeIndex |= 4;
+        if (vPoints[3].State < 1) cubeIndex |= 8;
+        if (vPoints[4].State < 1) cubeIndex |= 16;
+        if (vPoints[5].State < 1) cubeIndex |= 32;
+        if (vPoints[6].State < 1) cubeIndex |= 64;
+        if (vPoints[7].State < 1) cubeIndex |= 128;
 
         //Voxel cube is all air or filled
         if (EdgeTable[cubeIndex] == 0)
@@ -372,25 +372,24 @@ public class MarchingCubesHelper
             }            
         }
 
-        //meshSkeleton.Triangles = meshSkeleton.Triangles.Reverse<int>().ToList();
-        
-
         return meshSkeleton;
     }
 
-    private static Vector3 GetMidpoint(VoxelController v1, VoxelController v2, ChunkController homeChunk)
+    private static Vector3 GetMidpoint(VoxelData v1, VoxelData v2, ChunkData homeChunk)
     {
-        ChunkController v1ChunkParent = v1.GetComponentInParent<ChunkController>();
-        ChunkController v2ChunkParent = v2.GetComponentInParent<ChunkController>();
+        ChunkData v1ChunkParent = v1.ParentChunk;
+        ChunkData v2ChunkParent = v2.ParentChunk;
 
 
         if (v1ChunkParent == homeChunk && v2ChunkParent == homeChunk)
         {            
-            return (v1.transform.localPosition + v2.transform.localPosition) / 2;
+            return (v1.Position + v2.Position) / 2;
         }
         else
         {
-            return Vector3.MoveTowards(v1.transform.position, v2.transform.position, Vector3.Distance(v1.transform.position, v2.transform.position) / 2) - homeChunk.transform.position;
+            Vector3 v1WorldPos = v1.Position + v1.ParentChunk.Position;
+            Vector3 v2WorldPos = v2.Position + v2.ParentChunk.Position;
+            return Vector3.MoveTowards(v1WorldPos, v2WorldPos , Vector3.Distance(v1WorldPos, v2WorldPos) / 2) - homeChunk.Position;
         }
 
     }

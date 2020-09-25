@@ -10,9 +10,9 @@ public class VoxelController : MonoBehaviour
 
     private GameObject debugPrimitive;
 
-    public void Initialize(Vector3 position, int voxelState)
+    public void Initialize(ChunkData chunkData, Vector3 position, int voxelState)
     {
-        voxelData = new VoxelData(position, voxelState);
+        voxelData = new VoxelData(chunkData, position, voxelState);
 
         if(debug)
         {
@@ -24,6 +24,26 @@ public class VoxelController : MonoBehaviour
 
             RefreshState(voxelState);
         }
+    }
+
+    public void Initialize(VoxelData voxelData)
+    {
+        this.voxelData = voxelData;
+
+
+
+        if (debug)
+        {
+            debugPrimitive = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+
+            debugPrimitive.transform.parent = transform;
+            debugPrimitive.transform.localPosition = Vector3.zero;
+            debugPrimitive.transform.localScale = Vector3.one * .1f;
+
+           
+        }
+
+        RefreshState(voxelData.State);
     }
 
     public VoxelData GetVoxelData()

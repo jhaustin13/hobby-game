@@ -10,9 +10,12 @@ public class VoxelData
 
     public Vector3 Position { get; }
 
-    public VoxelData(Vector3 position, int state)
+    public ChunkData ParentChunk { get; }
+
+    public VoxelData(ChunkData parentChunk, Vector3 position, int state)
     {
         State = state;
         Position = position;
+        ParentChunk = parentChunk;
     }
 }

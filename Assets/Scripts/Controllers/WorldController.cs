@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-//TODO LIST:
-//Fix voxel interaction to work without debug spheres
-
-//Try to make voxels disabled when they are not at the edge of the mesh to make it more efficient (this is done... ish)
 public class WorldController : MonoBehaviour
 {
     public int SizeX;
@@ -18,6 +13,7 @@ public class WorldController : MonoBehaviour
     private int selectedState = 0;
 
     public ChunkController[,,] Chunks;
+    public WorldData worldData;
 
     public FastNoise FastNoise;
 
@@ -35,6 +31,7 @@ public class WorldController : MonoBehaviour
     void Awake()
     {
         FastNoise = new FastNoise();
+        worldData = new WorldData(SizeX, SizeY, SizeZ, 10, 1);
         //FastNoise.SetFrequency(100);
 
         Chunks = new ChunkController[SizeX, SizeY, SizeZ];
@@ -47,17 +44,32 @@ public class WorldController : MonoBehaviour
                 {
                     GameObject newChunk = Instantiate(chunkPrefab);
                     ChunkController chunkController = newChunk.GetComponent<ChunkController>();
-                    newChunk.transform.parent = transform;
-                    int resolution = chunkController.Resolution;
-                    float voxelSize = chunkController.VoxelSize;
-                    float offset = resolution * voxelSize;
+                    chunkController.transform.parent = transform;
+                    chunkController.Initialize(worldData.Chunks[x, y, z], x ,y ,z);                   
 
-                    newChunk.transform.localPosition = new Vector3(x * offset, y * offset, z * offset);
-                    chunkController.Initialize();
+                    Chunks[x, y, z] = chunkController;                    
+                }
+            }
+        }
 
-                    Chunks[x, y, z] = chunkController;
+        for (int y = 0; y < SizeY; ++y)
+        {
+            for (int z = 0; z < SizeZ; ++z)
+            {
+                for (int x = 0; x < SizeX; ++x)
+                {
+                    Chunks[x, y, z].SetChunkVoxelTerrain();
+                }
+            }
+        }
 
-                    chunkController.SetChunkVoxelTerrain();
+        for (int y = 0; y < SizeY; ++y)
+        {
+            for (int z = 0; z < SizeZ; ++z)
+            {
+                for (int x = 0; x < SizeX; ++x)
+                {
+                    Chunks[x, y, z].RefreshChunkMesh();
                 }
             }
         }
@@ -71,10 +83,12 @@ public class WorldController : MonoBehaviour
     public Coordinate GetChunkIndex(ChunkController chunkController)
     {
         Vector3 vPosition = chunkController.transform.localPosition;
-        float offset = chunkController.Resolution * chunkController.VoxelSize;
+        float offset = chunkController.ChunkData.Resolution * chunkController.ChunkData.VoxelSize;
 
         return new Coordinate((int)(vPosition.x / offset), (int)(vPosition.y / offset), (int)(vPosition.z / offset));
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -89,18 +103,18 @@ public class WorldController : MonoBehaviour
                 {
                     GameObject voxel = hitInfo.collider.gameObject;
                     VoxelController voxelController = voxel.GetComponent<VoxelController>();
-
+                    VoxelData voxelData = voxelController.GetVoxelData();
                     ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
 
-                    List<VoxelController> voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController);
+                    List<VoxelData> voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController.GetVoxelData());
 
-                    foreach(var v in voxels)
+                    foreach (var v in voxels)
                     {
-                        v.RefreshState(0);
-                    }                   
+                        v.State = 0;
+                    }
 
 
-                    chunkController.RefreshChunkMesh(voxelController);
+                    chunkController.RefreshChunkMeshAtVoxel(voxelController.GetVoxelData());
                 }
             }
         }
@@ -117,14 +131,14 @@ public class WorldController : MonoBehaviour
 
                     ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
 
-                    var voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController);
+                    var voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController.GetVoxelData());
 
-                    foreach(var v in voxels)
+                    foreach (var v in voxels)
                     {
-                        v.RefreshState(1);
+                        v.State = 1;
                     }
 
-                    chunkController.RefreshChunkMesh(voxelController);                  
+                    chunkController.RefreshChunkMeshAtVoxel(voxelController.GetVoxelData());
                 }
             }
         }
@@ -148,67 +162,7 @@ public class WorldController : MonoBehaviour
 
     }
 
-    private List<VoxelController> GetAllRelatedVoxels(VoxelController voxel)
-    {
-        ChunkController chunkController = voxel.GetComponentInParent<ChunkController>();
 
-        Coordinate vIndex = chunkController.GetVoxelIndex(voxel);
-
-        List<VoxelController> resultVoxels = new List<VoxelController>();
-        resultVoxels.Add(voxel);
-
-        int Xidx = vIndex.X;
-        int Yidx = vIndex.Y;
-        int Zidx = vIndex.Z;
-
-        VoxelController adjVoxel = null;
-        ChunkController adjChunk = null;
-
-        if (Yidx + 1 >= chunkController.Resolution)
-        {
-            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 1, 0));
-
-            if (adjChunk != null)
-            {
-                resultVoxels.Add(adjChunk.Voxels[Xidx, Yidx + 1 - chunkController.Resolution, Zidx]);
-            }
-        }
-        else
-        {
-            resultVoxels.Add(chunkController.Voxels[Xidx, Yidx + 1, Zidx]);
-        }      
-
-        if (Zidx + 1 >= chunkController.Resolution)
-        {
-            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(0, 0, 1));
-
-            if (adjChunk != null)
-            {
-                resultVoxels.Add(adjChunk.Voxels[Xidx, Yidx, Zidx + 1 - chunkController.Resolution]);
-            }
-        }
-        else
-        {
-            resultVoxels.Add(chunkController.Voxels[Xidx, Yidx, Zidx + 1]);
-        }      
-
-
-        if (Xidx + 1 >= chunkController.Resolution)
-        {
-            adjChunk = GetChunkRelativeToChunk(chunkController, new Coordinate(1, 0, 0));
-
-            if (adjChunk != null)
-            {
-                resultVoxels.Add(adjChunk.Voxels[Xidx + 1 - chunkController.Resolution, Yidx, Zidx]);
-            }
-        }
-        else
-        {
-            resultVoxels.Add(chunkController.Voxels[Xidx + 1, Yidx, Zidx]);
-        }       
-
-        return resultVoxels;
-    }
 
     private VFace GetHitFace(RaycastHit hit)
     {
