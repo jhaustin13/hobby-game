@@ -406,9 +406,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4b147511fffab4cbd8d8be7ecf2435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SizeX: 3
-  SizeY: 1
-  SizeZ: 3
+  SizeX: 5
+  SizeY: 3
+  SizeZ: 5
   chunkPrefab: {fileID: 2264613333255277703, guid: 7b252f0e44e25ff46964a789fbd8c27b,
     type: 3}
 --- !u!4 &1720000093

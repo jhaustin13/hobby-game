@@ -104,6 +104,9 @@ public class VoxelController : MonoBehaviour
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
+        mesh.Optimize();
+        mesh.OptimizeIndexBuffers();
+        mesh.OptimizeReorderVertexBuffer();
 
         meshCollider.sharedMesh = mesh;
         meshFilter.mesh = mesh;

@@ -31,7 +31,7 @@ public class WorldController : MonoBehaviour
     void Awake()
     {
         FastNoise = new FastNoise();
-        worldData = new WorldData(SizeX, SizeY, SizeZ, 10, 1);
+        worldData = new WorldData(SizeX, SizeY, SizeZ, 24, .5f);
         //FastNoise.SetFrequency(100);
 
         Chunks = new ChunkController[SizeX, SizeY, SizeZ];
@@ -99,22 +99,33 @@ public class WorldController : MonoBehaviour
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
             {
-                if (hitInfo.collider.gameObject.GetComponent<VoxelController>() != null)
+                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
                 {
-                    GameObject voxel = hitInfo.collider.gameObject;
-                    VoxelController voxelController = voxel.GetComponent<VoxelController>();
-                    VoxelData voxelData = voxelController.GetVoxelData();
-                    ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
+                    GameObject chunk = hitInfo.collider.gameObject;
+                    ChunkController chunkController = chunk.GetComponent<ChunkController>();
 
-                    List<VoxelData> voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController.GetVoxelData());
+                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
+
+                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
+
+                    List<VoxelData> voxels = voxelsAndCoordinates.First;
 
                     foreach (var v in voxels)
                     {
                         v.State = 0;
                     }
 
+                    chunkController.RefreshChunkMesh();
 
-                    chunkController.RefreshChunkMeshAtVoxel(voxelController.GetVoxelData());
+                    foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
+                    {
+                        ChunkController adjChunk = GetChunkRelativeToChunk(chunkController, coordinate);
+
+                        if (adjChunk != null)
+                        {
+                            adjChunk.RefreshChunkMesh();
+                        }
+                    }
                 }
             }
         }
@@ -124,21 +135,33 @@ public class WorldController : MonoBehaviour
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
             {
-                if (hitInfo.collider.gameObject.GetComponent<VoxelController>() != null)
+                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
                 {
-                    GameObject voxel = hitInfo.collider.gameObject;
-                    VoxelController voxelController = voxel.GetComponent<VoxelController>();
+                    GameObject chunk = hitInfo.collider.gameObject;
+                    ChunkController chunkController = chunk.GetComponent<ChunkController>();                    
 
-                    ChunkController chunkController = voxelController.GetComponentInParent<ChunkController>();
+                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
 
-                    var voxels = chunkController.GetRelatedVoxelsAtVoxel(voxelController.GetVoxelData());
+                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
+
+                    List<VoxelData> voxels = voxelsAndCoordinates.First;
 
                     foreach (var v in voxels)
                     {
                         v.State = 1;
                     }
 
-                    chunkController.RefreshChunkMeshAtVoxel(voxelController.GetVoxelData());
+                    chunkController.RefreshChunkMesh();
+
+                    foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
+                    {
+                        ChunkController adjChunk = GetChunkRelativeToChunk(chunkController, coordinate);
+
+                        if(adjChunk != null)
+                        {
+                            adjChunk.RefreshChunkMesh();
+                        }
+                    }                    
                 }
             }
         }

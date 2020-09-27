@@ -11,9 +11,12 @@ public class ChunkController : MonoBehaviour
 
     public VoxelController[,,] Voxels;
 
+    public Dictionary<int, VoxelData> TriVoxelMap;
+
     public void Initialize(ChunkData chunkData, int x, int y, int z)
     {
         ChunkData = chunkData;
+        TriVoxelMap = new Dictionary<int, VoxelData>();
         int resolution = chunkData.Resolution;
         float voxelSize = chunkData.VoxelSize;
         float offset = resolution * voxelSize;
@@ -41,99 +44,32 @@ public class ChunkController : MonoBehaviour
         Vector3 vPosition = voxelController.transform.localPosition;
 
         return new Coordinate((int)(vPosition.x / ChunkData.VoxelSize), (int)(vPosition.y / ChunkData.VoxelSize), (int)(vPosition.z / ChunkData.VoxelSize));
-    }
+    }   
 
     public void RefreshChunkMesh()
     {
-        for (int y = 0; y < ChunkData.Resolution; ++y)
-        {
-            for (int z = 0; z < ChunkData.Resolution; ++z)
-            {
-                for (int x = 0; x < ChunkData.Resolution; ++x)
-                {
-                    //Potentially switch this to go through voxel data instead of voxel controllers
-                    VoxelData currentVoxel = ChunkData.Voxels[x, y, z];
-                    RefreshChunkMeshAtVoxel(currentVoxel);
-                }
-            }
-        }
-    }
-
-
-
-    public void RefreshChunkMeshAtVoxel(VoxelData voxelData)
-    {
         List<VoxelData> voxelDatas = new List<VoxelData>(8);
 
-        WorldData worldData = voxelData.ParentChunk.ParentWorld;
+        List<MeshSkeletonVoxelModel> meshSkeletonsVoxelModels = new List<MeshSkeletonVoxelModel>();
 
-        Coordinate voxelCoordinates = voxelData.ParentChunk.GetVoxelIndex(voxelData);
+        WorldData worldData = ChunkData.ParentWorld;
 
-        //May have to fix this to work with voxel data instead of voxel controller
-        int startX = voxelCoordinates.X - 1;
-        int startY = voxelCoordinates.Y - 1;
-        int startZ = voxelCoordinates.Z - 1;
-
-        //Starting home chunk offset
-        int chunkOffsetX = 0;
-        int chunkOffsetY = 0;
-        int chunkOffsetZ = 0;
-
-        if (startX < 0)
-        {
-            chunkOffsetX = -1;
-            startX = ChunkData.Resolution + startX;
-        }
-
-        if (startY < 0)
-        {
-            chunkOffsetY = -1;
-            startY = ChunkData.Resolution + startY;
-        }
-
-        if (startZ < 0)
-        {
-            chunkOffsetZ = -1;
-            startZ = ChunkData.Resolution + startZ;
-        }
-
-        ChunkData homeChunk = worldData.GetChunkRelativeToChunk(ChunkData, new Coordinate(chunkOffsetX, chunkOffsetY, chunkOffsetZ));
-
-        if (homeChunk == null)
-        {
-            if (chunkOffsetX < 0) startX = 0;
-            if (chunkOffsetY < 0) startY = 0;
-            if (chunkOffsetZ < 0) startZ = 0;
-
-            chunkOffsetX = 0;
-            chunkOffsetY = 0;
-            chunkOffsetZ = 0;
-
-            homeChunk = ChunkData;
-        }
+        ChunkData homeChunk;
 
         for (int i = 0; i < 8; ++i)
         {
             voxelDatas.Add(null);
         }
 
-        ChunkData startHomeChunk = homeChunk;
+        
 
-        int endX = startX + 3;
-        int endY = startY + 3;
-        int endZ = startZ + 3;
-        for (int y = startY; y < endY; ++y)
+        for (int y = 0; y < ChunkData.Resolution; ++y)
         {
-            for (int z = startZ; z < endZ; ++z)
+            for (int z = 0; z < ChunkData.Resolution; ++z)
             {
-                for (int x = startX; x < endX; ++x)
+                for (int x = 0; x < ChunkData.Resolution; ++x)
                 {
-                    homeChunk = startHomeChunk;
-
-                    //These are for the chunk controller offset calculation to get the home chunk that might be manipulated during the loop
-                    int cOffsetX = 0;
-                    int cOffsetY = 0;
-                    int cOffsetZ = 0;
+                    homeChunk = ChunkData;                  
 
                     int tempX = -1;
                     int tempY = -1;
@@ -155,8 +91,7 @@ public class ChunkController : MonoBehaviour
                             continue;
                         }
 
-                        homeChunk = xChunk;
-                        cOffsetX++;
+                        homeChunk = xChunk;                     
 
                         tempX = x;
                         x -= ChunkData.Resolution;
@@ -173,8 +108,7 @@ public class ChunkController : MonoBehaviour
                             continue;
                         }
 
-                        homeChunk = yChunk;
-                        cOffsetY++;
+                        homeChunk = yChunk;                        
 
                         tempY = y;
                         y -= ChunkData.Resolution;
@@ -191,8 +125,7 @@ public class ChunkController : MonoBehaviour
                             continue;
                         }
 
-                        homeChunk = zChunk;
-                        cOffsetZ++;
+                        homeChunk = zChunk;                       
 
                         tempZ = z;
                         z -= ChunkData.Resolution;
@@ -331,41 +264,13 @@ public class ChunkController : MonoBehaviour
                     if (voxelDatas[6] == null) voxelDatas[6] = homeChunk.Voxels[x + 1, y + 1, z];
                     if (voxelDatas[7] == null) voxelDatas[7] = homeChunk.Voxels[x, y + 1, z];
 
-                    MeshSkeleton meshSkeleton = MarchingCubesHelper.GetTriangles(voxelDatas, homeChunk);
-
-                    WorldController worldController = GetComponentInParent<WorldController>();
-
-                    //Offset is calculate by the offset that may have occured at the beginning
-                    //plus and offsets that may have happened during the loop
-                    ChunkController homeChunkController = worldController.GetChunkRelativeToChunk(this,
-                        new Coordinate(chunkOffsetX + cOffsetX, chunkOffsetY + cOffsetY, chunkOffsetZ + cOffsetZ));
-
-                    if (homeChunkController == null)
-                    {
-                        if (x != tempX && tempX > 0) x = tempX;
-                        if (y != tempY && tempY > 0) y = tempY;
-                        if (z != tempZ && tempZ > 0) z = tempZ;
-                        continue;
-                    }
-
+                    MeshSkeleton meshSkeleton = MarchingCubesHelper.GetTriangles(voxelDatas, homeChunk);                 
+                    
                     //Instead of setting voxels to active/inactive we are removing and instantiating voxels based on voxel data
                     if (meshSkeleton.Vertices.Count > 0)
-                    {                        
-                        if (homeChunkController.Voxels[x, y, z] == null)
-                        {
-                            CreateVoxel(homeChunkController, x, y, z);
-                        }
-                        homeChunkController.Voxels[x, y, z].SetMesh(MeshHelper.ConvertSkeletonToMesh(meshSkeleton), ChunkData.VoxelSize, true);
-                    }
-                    else
                     {
-                        if (homeChunkController.Voxels[x, y, z] != null)
-                        {
-                            Destroy(homeChunkController.Voxels[x, y, z].gameObject);
-                            homeChunkController.Voxels[x, y, z] = null;
-                        }                        
-                    }
-
+                        meshSkeletonsVoxelModels.Add(new MeshSkeletonVoxelModel(meshSkeleton, voxelDatas[3]));
+                    }                 
 
                     if (x != tempX && tempX > 0) x = tempX;
                     if (y != tempY && tempY > 0) y = tempY;
@@ -373,11 +278,93 @@ public class ChunkController : MonoBehaviour
                 }
             }
         }
+
+        MeshSkeletonTriVoxelMapModel skeletonMap = CombineMeshSkeletons(meshSkeletonsVoxelModels);
+
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        MeshCollider meshCollider = GetComponent<MeshCollider>();
+
+        Mesh mesh = MeshHelper.ConvertSkeletonToMesh(skeletonMap.MeshSkeleton);
+       
+        //mesh.Optimize();
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        meshFilter.sharedMesh = mesh;
+        meshCollider.sharedMesh = mesh;        
+        TriVoxelMap = skeletonMap.TriVoxelMap;
+
     }
 
-    public List<VoxelData> GetRelatedVoxelsAtVoxel(VoxelData voxelData)
+    public MeshSkeleton CombineMeshSkeletons(List<MeshSkeleton> meshSkeletons)
+    {
+        MeshSkeleton result = new MeshSkeleton();
+        Dictionary<Vector3, int> vLu = new Dictionary<Vector3, int>();
+
+        foreach(var skeleton in meshSkeletons)
+        {
+            foreach(var tri in skeleton.Triangles)
+            {
+                if (vLu.ContainsKey(skeleton.Vertices[tri]))
+                {
+                    result.Triangles.Add(vLu[skeleton.Vertices[tri]]);
+                }
+                else
+                {
+                    result.Vertices.Add(skeleton.Vertices[tri]);
+                    vLu.Add(skeleton.Vertices[tri], vLu.Count);
+                    result.Triangles.Add(vLu[skeleton.Vertices[tri]]);
+                }
+            }            
+        }
+
+        return result;
+    }
+
+    public MeshSkeletonTriVoxelMapModel CombineMeshSkeletons(List<MeshSkeletonVoxelModel> meshSkeletons)
+    {
+        MeshSkeleton meshSkeleton = new MeshSkeleton();
+        Dictionary<Vector3, int> vLu = new Dictionary<Vector3, int>();
+        MeshSkeletonTriVoxelMapModel result = new MeshSkeletonTriVoxelMapModel();
+        Dictionary<int, VoxelData> triVoxelMap = new Dictionary<int, VoxelData>();
+
+        int triCount = 0;
+
+        foreach (var skeleton in meshSkeletons)
+        {
+            foreach (var tri in skeleton.MeshSkeleton.Triangles)
+            {
+                
+                if (vLu.ContainsKey(skeleton.MeshSkeleton.Vertices[tri]))
+                {
+                    meshSkeleton.Triangles.Add(vLu[skeleton.MeshSkeleton.Vertices[tri]]);
+                }
+                else
+                {
+                    meshSkeleton.Vertices.Add(skeleton.MeshSkeleton.Vertices[tri]);
+                    vLu.Add(skeleton.MeshSkeleton.Vertices[tri], vLu.Count);
+                    meshSkeleton.Triangles.Add(vLu[skeleton.MeshSkeleton.Vertices[tri]]);
+                }
+
+                if(triCount % 3 == 0)
+                {
+                    triVoxelMap.Add(triCount / 3, skeleton.VoxelData);
+                }
+                ++triCount;
+            }
+        }
+
+        result.MeshSkeleton = meshSkeleton;
+        result.TriVoxelMap = triVoxelMap;
+
+        return result;
+    }    
+    
+    public Pair<List<VoxelData>, List<Coordinate>> GetRelatedVoxelsAtVoxel(VoxelData voxelData)
     {
         List<VoxelData> voxelDatas = new List<VoxelData>(8);
+        List<Coordinate> offsets = new List<Coordinate>();
+        Pair<List<VoxelData>, List<Coordinate>> result = new Pair<List<VoxelData>, List<Coordinate>>();
 
         ChunkData homeChunk = voxelData.ParentChunk;
         WorldData worldData = homeChunk.ParentWorld;
@@ -395,14 +382,20 @@ public class ChunkController : MonoBehaviour
 
         if (z + 1 >= ChunkData.Resolution && y + 1 >= ChunkData.Resolution && x + 1 >= ChunkData.Resolution)
         {
-            ChunkData zyxPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(1, 1, 1));
+            Coordinate offset = new Coordinate(1, 1, 1);
+            ChunkData zyxPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             if (voxelDatas[5] == null) voxelDatas[5] = zyxPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y + 1 - ChunkData.Resolution, z + 1 - ChunkData.Resolution];
         }
 
         if (x + 1 >= ChunkData.Resolution && z + 1 >= ChunkData.Resolution)
         {
-            ChunkData xzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(1, 0, 1));
+            Coordinate offset = new Coordinate(1, 0, 1);
+            ChunkData xzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[1] = xzPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y, z + 1 - ChunkData.Resolution];
 
@@ -411,7 +404,10 @@ public class ChunkController : MonoBehaviour
 
         if (y + 1 >= ChunkData.Resolution && z + 1 >= ChunkData.Resolution)
         {
-            ChunkData yzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(0, 1, 1));
+            Coordinate offset = new Coordinate(0, 1, 1);
+            ChunkData yzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[4] = yzPlusChunk?.Voxels[x, y + 1 - ChunkData.Resolution, z + 1 - ChunkData.Resolution];
 
@@ -420,7 +416,10 @@ public class ChunkController : MonoBehaviour
 
         if (x + 1 >= ChunkData.Resolution && y + 1 >= ChunkData.Resolution)
         {
-            ChunkData xyPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(1, 1, 0));
+            Coordinate offset = new Coordinate(1, 1, 0);
+            ChunkData xyPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[6] = xyPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y + 1 - ChunkData.Resolution, z];
 
@@ -429,7 +428,10 @@ public class ChunkController : MonoBehaviour
 
         if (z + 1 >= ChunkData.Resolution)
         {
-            ChunkData zPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(0, 0, 1));
+            Coordinate offset = new Coordinate(0, 0, 1);
+            ChunkData zPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[0] = zPlusChunk?.Voxels[x, y, z + 1 - ChunkData.Resolution];
 
@@ -440,7 +442,10 @@ public class ChunkController : MonoBehaviour
 
         if (x + 1 >= ChunkData.Resolution)
         {
-            ChunkData xPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(1, 0, 0));
+            Coordinate offset = new Coordinate(1, 0, 0);
+            ChunkData xPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[2] = xPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y, z];
 
@@ -451,7 +456,10 @@ public class ChunkController : MonoBehaviour
 
         if (y + 1 >= ChunkData.Resolution)
         {
-            ChunkData yPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, new Coordinate(0, 1, 0));
+            Coordinate offset = new Coordinate(0, 1, 0);
+            ChunkData yPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
+
+            offsets.Add(offset);
 
             voxelDatas[7] = yPlusChunk?.Voxels[x, y + 1 - ChunkData.Resolution, z];
 
@@ -459,6 +467,15 @@ public class ChunkController : MonoBehaviour
             if (voxelDatas[5] == null && z + 1 < ChunkData.Resolution && x + 1 < ChunkData.Resolution) voxelDatas[5] = yPlusChunk?.Voxels[x + 1, y + 1 - ChunkData.Resolution, z + 1];
             if (voxelDatas[6] == null && x + 1 < ChunkData.Resolution) voxelDatas[6] = yPlusChunk?.Voxels[x + 1, y + 1 - ChunkData.Resolution, z];
         }
+
+        if (x == 0 && y > 0 && z > 0) offsets.Add(new Coordinate(-1, 0, 0));
+        if (y == 0 && x > 0 && z > 0) offsets.Add(new Coordinate(0, -1, 0));
+        if (z == 0 && x > 0 && y > 0) offsets.Add(new Coordinate(0, 0, -1));
+
+        if (x == 0 && y == 0 && z == 0) offsets.Add(new Coordinate(-1, -1, -1));
+        if (x == 0 && y == 0 && z > 0) offsets.Add(new Coordinate(-1, -1, 0));
+        if (x == 0 && y > 0 && z == 0) offsets.Add(new Coordinate(-1, 0, -1));
+        if (x > 0 && y == 0 && z == 0) offsets.Add(new Coordinate(0, -1, -1));
 
 
         if (voxelDatas[0] == null && z + 1 < ChunkData.Resolution) voxelDatas[0] = homeChunk.Voxels[x, y, z + 1];
@@ -470,7 +487,10 @@ public class ChunkController : MonoBehaviour
         if (voxelDatas[6] == null && x + 1 < ChunkData.Resolution && y + 1 < ChunkData.Resolution) voxelDatas[6] = homeChunk.Voxels[x + 1, y + 1, z];
         if (voxelDatas[7] == null && y + 1 < ChunkData.Resolution) voxelDatas[7] = homeChunk.Voxels[x, y + 1, z];
 
-        return voxelDatas;
+        result.First = voxelDatas;
+        result.Second = offsets;
+
+        return result;
     }
 
     public void SetChunkVoxelTerrain()
@@ -519,16 +539,4 @@ public class ChunkController : MonoBehaviour
         homeChunk.Voxels[x, y, z] = voxelController;
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
