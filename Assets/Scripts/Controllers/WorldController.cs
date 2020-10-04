@@ -93,78 +93,7 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
-        { //Break voxel
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-            {
-                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
-                {
-                    GameObject chunk = hitInfo.collider.gameObject;
-                    ChunkController chunkController = chunk.GetComponent<ChunkController>();
-
-                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
-
-                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
-
-                    List<VoxelData> voxels = voxelsAndCoordinates.First;
-
-                    foreach (var v in voxels)
-                    {
-                        v.State = 0;
-                    }
-
-                    chunkController.RefreshChunkMesh();
-
-                    foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
-                    {
-                        ChunkController adjChunk = GetChunkRelativeToChunk(chunkController, coordinate);
-
-                        if (adjChunk != null)
-                        {
-                            adjChunk.RefreshChunkMesh();
-                        }
-                    }
-                }
-            }
-        }
-        else if (Input.GetMouseButtonUp(1))
-        { //Place voxel
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-            {
-                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
-                {
-                    GameObject chunk = hitInfo.collider.gameObject;
-                    ChunkController chunkController = chunk.GetComponent<ChunkController>();                    
-
-                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
-
-                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
-
-                    List<VoxelData> voxels = voxelsAndCoordinates.First;
-
-                    foreach (var v in voxels)
-                    {
-                        v.State = 1;
-                    }
-
-                    chunkController.RefreshChunkMesh();
-
-                    foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
-                    {
-                        ChunkController adjChunk = GetChunkRelativeToChunk(chunkController, coordinate);
-
-                        if(adjChunk != null)
-                        {
-                            adjChunk.RefreshChunkMesh();
-                        }
-                    }                    
-                }
-            }
-        }
+        
     }
 
     public ChunkController GetChunkRelativeToChunk(ChunkController originChunk, Coordinate offset)

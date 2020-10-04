@@ -396,6 +396,7 @@ public class ChunkController : MonoBehaviour
             ChunkData xzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (y == 0) offsets.Add(new Coordinate(1, -1, 1));
 
             voxelDatas[1] = xzPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y, z + 1 - ChunkData.Resolution];
 
@@ -408,6 +409,7 @@ public class ChunkController : MonoBehaviour
             ChunkData yzPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (x == 0) offsets.Add(new Coordinate(-1, 1, 1));
 
             voxelDatas[4] = yzPlusChunk?.Voxels[x, y + 1 - ChunkData.Resolution, z + 1 - ChunkData.Resolution];
 
@@ -420,6 +422,7 @@ public class ChunkController : MonoBehaviour
             ChunkData xyPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (z == 0) offsets.Add(new Coordinate(1, 1, -1));
 
             voxelDatas[6] = xyPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y + 1 - ChunkData.Resolution, z];
 
@@ -432,6 +435,9 @@ public class ChunkController : MonoBehaviour
             ChunkData zPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (y == 0) offsets.Add(new Coordinate(0, -1, 1));
+            if (x == 0) offsets.Add(new Coordinate(-1, 0, 1));
+            if (x == 0 && y == 0) offsets.Add(new Coordinate(-1, -1, 1));
 
             voxelDatas[0] = zPlusChunk?.Voxels[x, y, z + 1 - ChunkData.Resolution];
 
@@ -446,6 +452,9 @@ public class ChunkController : MonoBehaviour
             ChunkData xPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (z == 0) offsets.Add(new Coordinate(1, 0, -1));
+            if (y == 0) offsets.Add(new Coordinate(1, -1, 0));
+            if (y == 0 && z == 0) offsets.Add(new Coordinate(1, -1, -1));
 
             voxelDatas[2] = xPlusChunk?.Voxels[x + 1 - ChunkData.Resolution, y, z];
 
@@ -460,6 +469,9 @@ public class ChunkController : MonoBehaviour
             ChunkData yPlusChunk = worldData.GetChunkRelativeToChunk(homeChunk, offset);
 
             offsets.Add(offset);
+            if (z == 0) offsets.Add(new Coordinate(0, 1, -1));
+            if (x == 0) offsets.Add(new Coordinate(-1, 1, 0));
+            if (x == 0 && z == 0) offsets.Add(new Coordinate(-1, 1, -1));
 
             voxelDatas[7] = yPlusChunk?.Voxels[x, y + 1 - ChunkData.Resolution, z];
 
@@ -468,14 +480,14 @@ public class ChunkController : MonoBehaviour
             if (voxelDatas[6] == null && x + 1 < ChunkData.Resolution) voxelDatas[6] = yPlusChunk?.Voxels[x + 1, y + 1 - ChunkData.Resolution, z];
         }
 
-        if (x == 0 && y > 0 && z > 0) offsets.Add(new Coordinate(-1, 0, 0));
-        if (y == 0 && x > 0 && z > 0) offsets.Add(new Coordinate(0, -1, 0));
-        if (z == 0 && x > 0 && y > 0) offsets.Add(new Coordinate(0, 0, -1));
+        if (x == 0) offsets.Add(new Coordinate(-1, 0, 0));
+        if (y == 0) offsets.Add(new Coordinate(0, -1, 0));
+        if (z == 0) offsets.Add(new Coordinate(0, 0, -1));
 
         if (x == 0 && y == 0 && z == 0) offsets.Add(new Coordinate(-1, -1, -1));
-        if (x == 0 && y == 0 && z > 0) offsets.Add(new Coordinate(-1, -1, 0));
-        if (x == 0 && y > 0 && z == 0) offsets.Add(new Coordinate(-1, 0, -1));
-        if (x > 0 && y == 0 && z == 0) offsets.Add(new Coordinate(0, -1, -1));
+        if (x == 0 && y == 0) offsets.Add(new Coordinate(-1, -1, 0));
+        if (x == 0 && z == 0) offsets.Add(new Coordinate(-1, 0, -1));
+        if (y == 0 && z == 0) offsets.Add(new Coordinate(0, -1, -1));
 
 
         if (voxelDatas[0] == null && z + 1 < ChunkData.Resolution) voxelDatas[0] = homeChunk.Voxels[x, y, z + 1];
@@ -526,17 +538,6 @@ public class ChunkController : MonoBehaviour
 
     }
 
-    private void CreateVoxel(ChunkController homeChunk, int x, int y, int z)
-    {
-        GameObject newVoxel = Instantiate(voxelPrefab);
-        VoxelController voxelController = newVoxel.GetComponent<VoxelController>();
-        newVoxel.transform.parent = homeChunk.transform;
-        voxelController.Initialize(homeChunk.ChunkData.Voxels[x, y, z]);
-
-        newVoxel.transform.localPosition = homeChunk.ChunkData.Voxels[x, y, z].Position;
-
-
-        homeChunk.Voxels[x, y, z] = voxelController;
-    }
+   
 
 }
