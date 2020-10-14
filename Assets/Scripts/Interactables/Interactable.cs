@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Assets.Scripts.Controllers;
 
-namespace Assets.Scripts.Interactable
+namespace Assets.Scripts.Interactables
 {
     public abstract class Interactable : MonoBehaviour
     {

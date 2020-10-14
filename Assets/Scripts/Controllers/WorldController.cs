@@ -11,6 +11,7 @@ public class WorldController : MonoBehaviour
     public GameObject chunkPrefab;
 
     private int selectedState = 0;
+    private int numOfTrees = 100;
 
     public ChunkController[,,] Chunks;
     public WorldData worldData;
@@ -62,6 +63,7 @@ public class WorldController : MonoBehaviour
                 }
             }
         }
+        List<ChunkController> chunks = new List<ChunkController>();
 
         for (int y = 0; y < SizeY; ++y)
         {
@@ -70,8 +72,30 @@ public class WorldController : MonoBehaviour
                 for (int x = 0; x < SizeX; ++x)
                 {
                     Chunks[x, y, z].RefreshChunkMesh();
+
+                    MeshFilter meshFilter = Chunks[x, y, z].GetComponent<MeshFilter>();
+                    if (meshFilter != null && meshFilter.mesh.vertexCount > 0)
+                    {
+                        chunks.Add(Chunks[x, y, z]);
+                    }
                 }
             }
+        }
+
+        
+
+        for(int i = 0; i < numOfTrees; ++i)
+        {
+            int randomChunk = Mathf.FloorToInt(Random.Range(0, chunks.Count));
+
+            var vertices = chunks[randomChunk].GetComponent<MeshFilter>().mesh.vertices;
+
+            int randomVertex = Mathf.FloorToInt(Random.Range(0, vertices.Length));
+
+            GameObject tree = Instantiate(Resources.Load<GameObject>("Trees/Test Tree"));
+            tree.transform.parent = chunks[randomChunk].transform;
+            tree.transform.localPosition = vertices[randomVertex];
+            tree.transform.rotation = Quaternion.Euler(0,Random.Range(0, 360),0);
         }
     }
     // Start is called before the first frame update

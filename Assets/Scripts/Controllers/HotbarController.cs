@@ -74,6 +74,21 @@ public class HotbarController : MonoBehaviour
         }
     }
 
+    public int GetHotbarSlotIndex(HotbarSlotController hotbarSlotController)
+    {
+        int index = -1;
+        for(int i = 0; i < HotbarSlots.Length; ++i)
+        {
+            if(hotbarSlotController == HotbarSlots[i].GetComponent<HotbarSlotController>())
+            {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
     public HotbarSlotController GetSelectedItem()
     {
         return HotbarSlots[0].GetComponent<HotbarSlotController>();

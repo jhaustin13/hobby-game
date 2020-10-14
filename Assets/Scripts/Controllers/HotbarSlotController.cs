@@ -14,8 +14,8 @@ public class HotbarSlotController : MonoBehaviour
     public void SetItem(ItemData itemData)
     {
         HotbarItem = Instantiate(HotBarItemPrefab);
-        HotbarItem.transform.SetParent(transform.parent);
-        HotbarItem.transform.localPosition = transform.localPosition + new Vector3(0, 35, 0);
+        HotbarItem.transform.SetParent(transform);
+        HotbarItem.transform.localPosition = new Vector3(0, 35, 0);
 
         HotbarItemController hotbarItemController = HotbarItem.GetComponent<HotbarItemController>();
         hotbarItemController.Initialize();
@@ -25,8 +25,8 @@ public class HotbarSlotController : MonoBehaviour
     public void SetItem(GameObject hotbarItem)
     {
         HotbarItem = hotbarItem;
-        HotbarItem.transform.parent = transform.parent;
-        HotbarItem.transform.localPosition = transform.localPosition + new Vector3(0, 35, 0);        
+        HotbarItem.transform.SetParent(transform);
+        HotbarItem.transform.localPosition = new Vector3(0, 35, 0);        
     }
 
     public void RefreshItem()
@@ -45,6 +45,11 @@ public class HotbarSlotController : MonoBehaviour
     public void ClearItem()
     {        
         Destroy(HotbarItem);
+        HotbarItem = null;
+    }
+
+    public void ClearSlot()
+    {
         HotbarItem = null;
     }
 }

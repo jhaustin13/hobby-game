@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Interactable;
+using Assets.Scripts.Interactables;
 
 namespace Assets.Scripts.Controllers
 {
@@ -83,7 +83,7 @@ namespace Assets.Scripts.Controllers
                     //    plantController.Split(closestVertex);
                     //}
 
-                    var interactable = hit.collider.GetComponent<Interactable.Interactable>();
+                    var interactable = hit.collider.GetComponent<Interactable>();
 
                     if (interactable != null)
                     {
@@ -98,7 +98,7 @@ namespace Assets.Scripts.Controllers
 
                 if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, interationDistance))
                 {
-                    var interactable = hit.collider.GetComponent<Interactable.Interactable>();
+                    var interactable = hit.collider.GetComponent<Interactable>();
 
                     if (interactable != null)
                     {
@@ -113,7 +113,7 @@ namespace Assets.Scripts.Controllers
 
                 if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, interationDistance))
                 {
-                    var interactable = hit.collider.GetComponent<Interactable.Interactable>();
+                    var interactable = hit.collider.GetComponent<Interactable>();
 
                     if (interactable != null)
                     {

@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 6150780893516612087}
   - component: {fileID: 8396726626071204892}
   - component: {fileID: 3163163166236124373}
+  - component: {fileID: -8663040782089895922}
   m_Layer: 5
   m_Name: Hotbar Slot
   m_TagString: Untagged
@@ -183,3 +184,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HotBarItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
     type: 3}
+--- !u!114 &-8663040782089895922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7622064309845697697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0228f5ca2e2a84e97388e27ff58d83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

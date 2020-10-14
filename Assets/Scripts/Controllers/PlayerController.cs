@@ -1,7 +1,9 @@
 ﻿using Assets.Scripts.Controllers;
+using Assets.Scripts.Interactables;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,116 +25,61 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         PlayerData.Position = transform.position;
+        
+        if(!UIManager.Instance.InventoryOpen)
+        {
+            if (Input.GetMouseButtonUp(0))
+            { //Break voxel
+                RaycastHit hitInfo;
 
-        if (Input.GetMouseButtonUp(0))
-        { //Break voxel
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-            {
-                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
                 {
-                    GameObject chunk = hitInfo.collider.gameObject;
-                    ChunkController chunkController = chunk.GetComponent<ChunkController>();
-
-                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
-                    WorldController worldController = chunkController.GetComponentInParent<WorldController>();
-
-                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
-
-                    List<VoxelData> voxels = voxelsAndCoordinates.First;
-
-                    foreach (var v in voxels)
+                    Interactable interactable = hitInfo.collider.gameObject.GetComponent<Interactable>();
+                    if (interactable != null)
                     {
-                        if(v.State != 0)
-                        {
-                            //Create pickups that are of the terrain type needed
-                            GameObject pickup = Instantiate(Resources.Load("Prefabs/Dirt Pickup")) as GameObject;
-                            pickup.transform.parent = chunkController.transform;
-                            pickup.transform.position = hitInfo.point;
-                            pickup.GetComponent<Rigidbody>().AddForce(Vector3.up);
-
-                            PickUpController pickUpController = pickup.GetComponent<PickUpController>();
-                            if(pickUpController == null)
-                            {
-                                pickup.AddComponent<PickUpController>();
-                            }
-
-                            pickUpController.Initialize(new ItemData("Dirt", 1));
-
-                            v.State = 0;
-                        }
-                        
+                        interactable.HandleLeftClick(this, hitInfo);
                     }
 
-                    chunkController.RefreshChunkMesh();
-
-                    foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
+                    if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
                     {
-                        ChunkController adjChunk = worldController.GetChunkRelativeToChunk(chunkController, coordinate);
 
-                        if (adjChunk != null)
-                        {
-                            adjChunk.RefreshChunkMesh();
-                        }
+                    }
+                }
+            }
+            else if (Input.GetMouseButtonUp(1))
+            { //Place voxel
+                RaycastHit hitInfo;
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+                {
+                    Interactable interactable = hitInfo.collider.gameObject.GetComponent<Interactable>();
+                    if (interactable != null)
+                    {
+                        interactable.HandleRightClick(this, hitInfo);
+                    }
+                }
+            }
+            else if (Input.GetMouseButtonUp(2))
+            { //Place voxel
+                RaycastHit hitInfo;
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
+                {
+                    Interactable interactable = hitInfo.collider.gameObject.GetComponent<Interactable>();
+                    if (interactable != null)
+                    {
+                        interactable.HandleMiddleClick(this, hitInfo);
                     }
                 }
             }
         }
-        else if (Input.GetMouseButtonUp(1))
-        { //Place voxel
-            RaycastHit hitInfo;
+        
 
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
-            {
-                if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
-                {
-                    GameObject chunk = hitInfo.collider.gameObject;
-                    ChunkController chunkController = chunk.GetComponent<ChunkController>();
-                    WorldController worldController = chunkController.GetComponentInParent<WorldController>();
 
-                    VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
-
-                    var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
-
-                    List<VoxelData> voxels = voxelsAndCoordinates.First;
-
-                    int itemInHandIndex = PlayerData.InventoryData.SelectedHotbarIndex;
-                    ItemData itemInHand = PlayerData.InventoryData.HotbarItems[itemInHandIndex];
-
-                    bool placedAVoxel = false;
-                    //Will def need to modify this once get something other than dirt but this should work for now.
-                    foreach (var v in voxels)
-                    {                     
-                        if(v.State == 0 && itemInHand != null && itemInHand.Quantity > 0)
-                        {
-                            if(PlayerData.InventoryData.UseSelectedItem(1))
-                            {
-                                placedAVoxel = true;
-                                v.State = 1;
-                            }                          
-                        }                        
-                    }
-
-                    if(placedAVoxel)
-                    {
-                        UIManager.Instance.RefreshHotbar();
-                        chunkController.RefreshChunkMesh();
-
-                        foreach (Coordinate coordinate in voxelsAndCoordinates.Second)
-                        {
-                            ChunkController adjChunk = worldController.GetChunkRelativeToChunk(chunkController, coordinate);
-
-                            if (adjChunk != null)
-                            {
-                                adjChunk.RefreshChunkMesh();
-                            }
-                        }
-                    }                    
-                }
-            }
-        }       
-
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            UIManager.Instance.ToggleInventory();
+        }
     }
 
     private void OnTriggerEnter(Collider collider)

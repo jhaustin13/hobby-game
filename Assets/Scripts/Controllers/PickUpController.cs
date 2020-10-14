@@ -22,6 +22,7 @@ namespace Assets.Scripts.Controllers
             if (GetComponent<SphereCollider>() == null)
             {
                 SphereCollider sphereCollider = transform.gameObject.AddComponent<SphereCollider>();
+                sphereCollider.isTrigger = true;
                 sphereCollider.radius = 1.5f;
             }
 
