@@ -1,4 +1,5 @@
-﻿using ECM.Components;
+﻿using Assets.Scripts.Droppables;
+using ECM.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ public class UIManager : Singleton<UIManager>
         }
         else
         {
-            HotbarSlotController hotbarSlotController = selectedItem.GetComponentInParent<HotbarSlotController>();
+            SlotController hotbarSlotController = selectedItem.GetComponentInParent<SlotController>();
             HotbarController hotbarController = Hotbar.GetComponent<HotbarController>();
 
             ItemDraggedStartIndex = hotbarController.GetHotbarSlotIndex(hotbarSlotController);

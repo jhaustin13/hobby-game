@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43ab556fd408768469aea3c4dc45026b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HotBarItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
+  ItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
     type: 3}
 --- !u!114 &-8663040782089895922
 MonoBehaviour:

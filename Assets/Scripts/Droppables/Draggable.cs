@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,72 +7,75 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-public class Draggable : MonoBehaviour, IPointerDownHandler
+namespace Assets.Scripts.Droppables
 {
-    private RectTransform rectTransform;
-    private bool isSelected;
-    private Vector3 startPosition;
+    public class Draggable : MonoBehaviour, IPointerDownHandler
+    {
+        private RectTransform rectTransform;
+        private bool isSelected;
+        private Vector3 startPosition;
 
-    void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if(!isSelected && UIManager.Instance.SelectedItem == null)
+        void Awake()
         {
-            isSelected = true;
-            startPosition = rectTransform.position;
-            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-
-            canvasGroup.blocksRaycasts = false;
-
-            UIManager.Instance.SetSelectedItem(gameObject);
+            rectTransform = GetComponent<RectTransform>();
         }
-        else
+        public void OnPointerDown(PointerEventData eventData)
         {
-            Droppable droppable = eventData.pointerCurrentRaycast.gameObject?.GetComponent<Droppable>();
-
-            if (droppable != null)
+            if (!isSelected && UIManager.Instance.SelectedItem == null)
             {
-                if(eventData.button == PointerEventData.InputButton.Left)
+                isSelected = true;
+                startPosition = rectTransform.position;
+                CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+
+                canvasGroup.blocksRaycasts = false;
+
+                UIManager.Instance.SetSelectedItem(gameObject);
+            }
+            else
+            {
+                Droppable droppable = eventData.pointerCurrentRaycast.gameObject?.GetComponent<Droppable>();                
+
+                if (droppable != null)
                 {
-                    droppable.HandleItemDropLeftClick(this, eventData);
+                    if (eventData.button == PointerEventData.InputButton.Left)
+                    {
+                        droppable.HandleItemDropLeftClick(this, eventData);
+                    }
+                    else if (eventData.button == PointerEventData.InputButton.Right)
+                    {
+                        droppable.HandleItemDropRightClick(this, eventData);
+                    }
+
                 }
-                else if(eventData.button == PointerEventData.InputButton.Right)
-                {
-                    droppable.HandleItemDropRightClick(this, eventData);
-                }
-                
+            }
+
+
+        }
+
+        void Update()
+        {
+            if (isSelected)
+            {
+                rectTransform.position = Input.mousePosition;
             }
         }
-        
-        
-    }
 
-    void Update()
-    {
-        if(isSelected)
-        {            
-            rectTransform.position = Input.mousePosition;
+        public void Deselect()
+        {
+            isSelected = false;
+            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+            canvasGroup.blocksRaycasts = true;
+            UIManager.Instance.SetSelectedItem(null);
         }
-    }
 
-    public void Deselect()
-    {
-        isSelected = false;
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.blocksRaycasts = true;
-    }
+        public void ReturnDraggable()
+        {
+            isSelected = false;
+            rectTransform.position = startPosition;
+            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+            canvasGroup.blocksRaycasts = true;
+        }
 
-    public void ReturnDraggable()
-    {
-        isSelected = false;
-        rectTransform.position = startPosition;
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-        canvasGroup.blocksRaycasts = true;
     }
-
 }
 

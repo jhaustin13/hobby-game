@@ -56,7 +56,7 @@ public class HotbarController : MonoBehaviour
                 HotbarSlots[i].GetComponent<CanvasGroup>().alpha = .4f;
             }
 
-            HotbarSlotController hbsController = HotbarSlots[i].GetComponent<HotbarSlotController>();
+            SlotController hbsController = HotbarSlots[i].GetComponent<SlotController>();
 
             if (PlayerData.InventoryData.HotbarItems[i] != null && hbsController.IsEmpty())
             {
@@ -69,17 +69,17 @@ public class HotbarController : MonoBehaviour
             else if(PlayerData.InventoryData.HotbarItems[i] == null && !hbsController.IsEmpty())
             {
                 hbsController.ClearItem();
-            }
+            }            
 
         }
     }
 
-    public int GetHotbarSlotIndex(HotbarSlotController hotbarSlotController)
+    public int GetHotbarSlotIndex(SlotController hotbarSlotController)
     {
         int index = -1;
         for(int i = 0; i < HotbarSlots.Length; ++i)
         {
-            if(hotbarSlotController == HotbarSlots[i].GetComponent<HotbarSlotController>())
+            if(hotbarSlotController == HotbarSlots[i].GetComponent<SlotController>())
             {
                 index = i;
                 break;
@@ -89,9 +89,9 @@ public class HotbarController : MonoBehaviour
         return index;
     }
 
-    public HotbarSlotController GetSelectedItem()
+    public SlotController GetSelectedItem()
     {
-        return HotbarSlots[0].GetComponent<HotbarSlotController>();
+        return HotbarSlots[0].GetComponent<SlotController>();
     }
 
     private void OnGUI()
