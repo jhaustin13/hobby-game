@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Droppables;
+﻿using Assets.Scripts.Controllers;
+using Assets.Scripts.Droppables;
 using ECM.Components;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject Player;
     public GameObject Hotbar;
     public GameObject Inventory;
+    public GameObject Crafting;
 
     public bool InventoryOpen;
     public int ItemDraggedStartIndex;
@@ -20,12 +22,15 @@ public class UIManager : Singleton<UIManager>
     public GameObject SelectedItem;
     void Start()
     {
+        SelectedItem = null;
         //Need to get player data and pass it to the hotbar
         //However it doesn't make sense of the UI Manager to have a reference of the player... or does it
         HotbarController hbController = Hotbar.GetComponent<HotbarController>();
         PlayerController playerController = Player.GetComponent<PlayerController>();
+        CraftingController craftingController = Crafting.GetComponent<CraftingController>();
 
         hbController.Initialize(playerController.PlayerData);
+        craftingController.Initialize(playerController.PlayerData);
 
         CanvasGroup canvasGroup = Inventory.GetComponent<CanvasGroup>();
         canvasGroup.alpha = 0;

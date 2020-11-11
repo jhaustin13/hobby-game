@@ -16,7 +16,7 @@ namespace Assets.Scripts.Droppables
             base.HandleItemDropLeftClick(draggable, pointerEventData);
 
             SlotController hotbarSlotController = GetComponent<SlotController>();
-            if (hotbarSlotController != null && hotbarSlotController.IsEmpty())
+            if (hotbarSlotController != null && draggable.transform.parent != transform)
             {
                 HotbarController hotbarController = hotbarSlotController.GetComponentInParent<HotbarController>();
                 ItemController itemController = draggable.GetComponent<ItemController>();
@@ -25,7 +25,8 @@ namespace Assets.Scripts.Droppables
                 int endIndex = hotbarController.GetHotbarSlotIndex(hotbarSlotController);
 
                 //Moving items clears out old spots in the inventory
-                inventoryData.MoveToHotbar(itemController.GetItem(), endIndex);
+                inventoryData.MoveToHotbar(itemController.GetItem(), endIndex);               
+
             }
         }
 
@@ -34,7 +35,6 @@ namespace Assets.Scripts.Droppables
             //Need to handle hotbar specific information
             //If there is already an item on the droppable we need to update inventory items
             base.HandleItemDropRightClick(draggable, pointerEventData);
-
 
             ItemController itemController = draggable.GetComponent<ItemController>();
             ItemData itemData = itemController?.GetItem();

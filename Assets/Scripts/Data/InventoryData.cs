@@ -10,6 +10,8 @@ public class InventoryData
 
     public ItemData[] HotbarItems { get; }
 
+    public ItemData[] CraftingSlots { get; }
+
     public int SelectedHotbarIndex;
 
     private int numRows = 1;
@@ -19,6 +21,7 @@ public class InventoryData
     {
         Items = new ItemData[numRows, numCols];
         HotbarItems = new ItemData[10];
+        CraftingSlots = new ItemData[2];
         SelectedHotbarIndex = 0;
 
         for (int rows = 0; rows < numRows; ++rows)
@@ -33,6 +36,9 @@ public class InventoryData
         {
             HotbarItems[i] = null;
         }
+
+        CraftingSlots[0] = null;
+        CraftingSlots[1] = null;
     }
 
     public bool AddInventory(ItemData itemData)
@@ -131,6 +137,30 @@ public class InventoryData
         return successfullyMoved;
     }
 
+    public bool MoveToCrafting(ItemData itemData, int index)
+    {
+        bool successfullyMoved = false;
+
+        if (CraftingSlots[index] != null && CraftingSlots[index].Name == itemData.Name)
+        {
+            CraftingSlots[index].AddToItem(itemData.Quantity);
+            successfullyMoved = true;
+        }
+
+        if (successfullyMoved || CraftingSlots[index] == null)
+        {
+            ClearOldItemLocation(itemData);
+        }
+
+        if (!successfullyMoved && CraftingSlots[index] == null)
+        {
+            CraftingSlots[index] = itemData;
+            successfullyMoved = true;
+        }
+
+        return successfullyMoved;
+    }
+
     public bool MoveToInventory(ItemData itemData, int row, int column)
     {
         bool successfullyMoved = false;
@@ -193,6 +223,15 @@ public class InventoryData
             if (HotbarItems[i] == itemData)
             {
                 HotbarItems[i] = null;
+                return;
+            }
+        }
+
+        for (int i = 0; i < CraftingSlots.Length; ++i)
+        {
+            if (CraftingSlots[i] == itemData)
+            {
+                CraftingSlots[i] = null;
                 return;
             }
         }

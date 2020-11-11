@@ -184,6 +184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
     type: 3}
+  ItemOffset: {x: 0, y: 35, z: 0}
 --- !u!114 &-8663040782089895922
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,21 +12,45 @@ namespace Assets.Scripts.Droppables
     public class Droppable : MonoBehaviour, IPointerDownHandler
     {
         public virtual void HandleItemDropLeftClick(Draggable draggable, PointerEventData pointerEventData)
-        {
+        {          
             if (draggable.transform.parent == transform)
             {
                 draggable.Deselect();
-                draggable.transform.localPosition = new Vector3(0, 35, 0);
+                SlotController slotController = GetComponent<SlotController>();
+                if (slotController != null)
+                {
+                    draggable.transform.localPosition = slotController.ItemOffset;
+                }
+                else
+                {
+                    draggable.transform.localPosition = new Vector3(0, 35, 0);
+                }
                 return;
             }
 
+            SlotController beforeSlotController = draggable.GetComponentInParent<SlotController>();
             Draggable draggableChild = GetComponentInChildren<Draggable>();
             if (draggableChild == null)
             {
                 RectTransform rectTransform = draggable.GetComponent<RectTransform>();
                 rectTransform.SetParent(transform);
-                draggable.transform.localPosition = new Vector3(0, 35, 0);
+                SlotController slotController = GetComponent<SlotController>();
+                if(slotController != null)
+                {
+                    draggable.transform.localPosition = slotController.ItemOffset;
+                }
+                else
+                {
+                    draggable.transform.localPosition = new Vector3(0, 35, 0);
+                }
+                
                 draggable.Deselect();
+
+                if(beforeSlotController != slotController)
+                {
+                    beforeSlotController.ClearSlot();
+                    slotController.SetItem(draggable.gameObject);
+                }
             }
 
 
@@ -34,6 +58,7 @@ namespace Assets.Scripts.Droppables
 
         public virtual void HandleItemDropRightClick(Draggable draggable, PointerEventData pointerEventData)
         {
+            //TODO fix right clicking on the slot that the current draggable is from
             //If the item in the draggable is capable of being split we need to create a new game object with the split item data
             ItemController itemController = draggable.GetComponent<ItemController>();
             if (itemController != null)
@@ -53,7 +78,12 @@ namespace Assets.Scripts.Droppables
                     else
                     {
                         SlotController slotController = GetComponent<SlotController>();
-                        slotController.SetItem(draggable.gameObject);
+                        SlotController beforeSlotController = draggable.GetComponentInParent<SlotController>();
+                        if (beforeSlotController != slotController)
+                        {
+                            beforeSlotController.ClearSlot();
+                            slotController.SetItem(draggable.gameObject);
+                        }                       
 
                         slotController.RefreshItem();
 
@@ -85,7 +115,7 @@ namespace Assets.Scripts.Droppables
 
         public void OnPointerDown(PointerEventData eventData)
         {          
-            Draggable draggable = UIManager.Instance.SelectedItem.GetComponent<Draggable>();            
+            Draggable draggable = UIManager.Instance.SelectedItem?.GetComponent<Draggable>();            
 
             if (draggable != null)
             {

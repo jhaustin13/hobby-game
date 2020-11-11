@@ -10,13 +10,16 @@ public class SlotController : MonoBehaviour
 {
     public GameObject ItemPrefab;
 
+    public Vector3 ItemOffset;
+
     private GameObject Item;
+    
 
     public void SetItem(ItemData itemData)
     {
         Item = Instantiate(ItemPrefab);
         Item.transform.SetParent(transform);
-        Item.transform.localPosition = new Vector3(0, 35, 0);
+        Item.transform.localPosition = ItemOffset;
 
         ItemController ItemController = Item.GetComponent<ItemController>();
         ItemController.Initialize();
@@ -29,7 +32,7 @@ public class SlotController : MonoBehaviour
     {
         Item = item;
         Item.transform.SetParent(transform);
-        Item.transform.localPosition = new Vector3(0, 35, 0);
+        Item.transform.localPosition = ItemOffset;
 
         GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
@@ -53,8 +56,8 @@ public class SlotController : MonoBehaviour
     }
 
     public void ClearItem()
-    {        
-        Destroy(Item);
+    {       
+        Destroy(Item.gameObject);
         Item = null;
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }

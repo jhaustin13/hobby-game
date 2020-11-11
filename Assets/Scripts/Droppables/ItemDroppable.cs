@@ -11,9 +11,7 @@ namespace Assets.Scripts.Droppables
     public class ItemDroppable : Droppable
     {
         public override void HandleItemDropLeftClick(Draggable draggable, PointerEventData pointerEventData)
-        {
-           
-
+        {         
             ItemController itemController = draggable.GetComponent<ItemController>();
             ItemController itemInSlot = GetComponent<ItemController>();
             ItemData itemData = itemController.GetItem();
@@ -23,8 +21,9 @@ namespace Assets.Scripts.Droppables
             {
                 base.HandleItemDropLeftClick(draggable, pointerEventData);
                 HotbarDroppable hotbarDroppable = GetComponentInParent<HotbarDroppable>();
+                CraftingDroppable craftingDroppable = GetComponentInParent<CraftingDroppable>();
 
-                if (hotbarDroppable != null)
+                if (hotbarDroppable != null && craftingDroppable == null)
                 {
                     SlotController slotController = hotbarDroppable.GetComponent<SlotController>();
                     HotbarController hotbarController = slotController.GetComponentInParent<HotbarController>();
@@ -38,6 +37,19 @@ namespace Assets.Scripts.Droppables
                     draggable.GetComponentInParent<SlotController>().ClearItem();
                                         
                 }
+                else if(craftingDroppable != null &&  hotbarDroppable == null)
+                {
+                    SlotController slotController = craftingDroppable.GetComponent<SlotController>();
+                    CraftingController craftingController = slotController.GetComponentInParent<CraftingController>();
+
+                    int index = craftingController.GetCraftingSlotIndex(slotController);
+                    craftingController.PlayerData.InventoryData.MoveToCrafting(itemData, index);
+
+                    slotController.RefreshItem();
+
+                    draggable.Deselect();
+                    draggable.GetComponentInParent<SlotController>().ClearItem();
+                }
             }
         }
 
@@ -48,8 +60,9 @@ namespace Assets.Scripts.Droppables
             ItemController itemController = draggable.GetComponent<ItemController>();
 
             HotbarDroppable hotbarDroppable = GetComponentInParent<HotbarDroppable>();
+            CraftingDroppable craftingDroppable = GetComponentInParent<CraftingDroppable>();
 
-            if (hotbarDroppable != null)
+            if (hotbarDroppable != null && craftingDroppable == null)
             {
                 SlotController slotController = hotbarDroppable.GetComponent<SlotController>();
                 HotbarController hotbarController = slotController.GetComponentInParent<HotbarController>();
@@ -57,6 +70,17 @@ namespace Assets.Scripts.Droppables
                 if (itemController.GetItem().Quantity == 0)
                 {
                     hotbarController.PlayerData.InventoryData.ClearItem(itemController.GetItem());
+                    itemController.GetComponentInParent<SlotController>().ClearItem();
+                }
+            }
+            else if(craftingDroppable != null && hotbarDroppable == null)
+            {
+                SlotController slotController = craftingDroppable.GetComponent<SlotController>();
+                CraftingController craftingController = slotController.GetComponentInParent<CraftingController>();
+
+                if (itemController.GetItem().Quantity == 0)
+                {
+                    craftingController.PlayerData.InventoryData.ClearItem(itemController.GetItem());
                     itemController.GetComponentInParent<SlotController>().ClearItem();
                 }
             }

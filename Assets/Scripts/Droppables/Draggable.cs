@@ -25,9 +25,14 @@ namespace Assets.Scripts.Droppables
             {
                 isSelected = true;
                 startPosition = rectTransform.position;
-                CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
 
+                CanvasGroup parentCanvasGroup = transform.parent.GetComponentInParent<CanvasGroup>();
+                parentCanvasGroup.blocksRaycasts = true;
+
+                CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
                 canvasGroup.blocksRaycasts = false;
+
+                
 
                 UIManager.Instance.SetSelectedItem(gameObject);
             }
