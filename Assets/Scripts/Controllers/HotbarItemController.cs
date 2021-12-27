@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Controllers
 {
-    public class HotbarItemController : ItemController
+    public class HotbarItemController : InventoryItemController
     {
 
 

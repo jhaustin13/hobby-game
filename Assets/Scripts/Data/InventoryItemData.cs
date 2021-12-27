@@ -5,16 +5,40 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public class ItemData
+public class InventoryItemData
 {
     public string Name { get; protected set; }
 
     public int Quantity { get; protected set; }
 
-    public ItemData(string name, int quantity)
+    public List<string> Attributes { get; protected set; }
+    public string ResourcePath { get; protected set; }
+
+    public InventoryItemData()
+    {
+        Name = "Item";
+        Quantity = 1;
+    }
+
+    public InventoryItemData(string name, int quantity)
     {
         Name = name;
         Quantity = quantity;
+        Attributes = new List<string>();        
+    }
+
+    public InventoryItemData(string name, int quantity, List<string> attributes, string resourcePath) : this(name,quantity)
+    {
+        Attributes = attributes;
+        ResourcePath = resourcePath;
+    }
+
+    public InventoryItemData(InventoryItemData item)
+    {
+        Name = item.Name;
+        Quantity = item.Quantity;
+        Attributes = item.Attributes;
+        ResourcePath = item.ResourcePath;
     }
 
     public int AddToItem(int quantity)

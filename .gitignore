@@ -7,3 +7,6 @@
 /Library
 /Temp
 /UserSettings
+/obj/Debug
+/.vsconfig
+/Logs

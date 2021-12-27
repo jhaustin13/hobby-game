@@ -16,6 +16,9 @@ namespace Assets.Scripts.Interactables
 
         public abstract void HandleMiddleClick(PlayerController playerController, RaycastHit hit);
 
+        //TODO : Need to actually build out base implementations for anything interactable
+        // For right click specifically we need to indentify the voxel that we want to perform and action on
+        // and if its something simple like placing an object this interactable can handle that
         public abstract void HandleRightClick(PlayerController playerController, RaycastHit hit);
        
     }

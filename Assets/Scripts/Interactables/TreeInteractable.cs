@@ -33,7 +33,7 @@ namespace Assets.Scripts.Interactables
                 wood.transform.parent = treeController.transform.parent;
 
                 PickUpController pickupController = wood.GetComponent<PickUpController>();
-                pickupController.Initialize(new ItemData("Wood", 1));
+                pickupController.Initialize(new InventoryItemData("Wood", 1, new List<string>() {  }, "Images/resources_2"));
 
                 int randomVert = Random.Range(0, mesh.vertices.Length);
 

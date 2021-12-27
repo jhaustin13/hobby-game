@@ -12,10 +12,10 @@ namespace Assets.Scripts.Droppables
     {
         public override void HandleItemDropLeftClick(Draggable draggable, PointerEventData pointerEventData)
         {         
-            ItemController itemController = draggable.GetComponent<ItemController>();
-            ItemController itemInSlot = GetComponent<ItemController>();
-            ItemData itemData = itemController.GetItem();
-            ItemData itemDataInSlot = itemInSlot.GetItem();
+            InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
+            InventoryItemController itemInSlot = GetComponent<InventoryItemController>();
+            InventoryItemData itemData = itemController.GetItem();
+            InventoryItemData itemDataInSlot = itemInSlot.GetItem();
 
             if (itemController != null && itemInSlot != null && itemData != itemDataInSlot && itemData.Name == itemDataInSlot.Name)
             {
@@ -57,7 +57,7 @@ namespace Assets.Scripts.Droppables
         {
             base.HandleItemDropRightClick(draggable, pointerEventData);
 
-            ItemController itemController = draggable.GetComponent<ItemController>();
+            InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
 
             HotbarDroppable hotbarDroppable = GetComponentInParent<HotbarDroppable>();
             CraftingDroppable craftingDroppable = GetComponentInParent<CraftingDroppable>();

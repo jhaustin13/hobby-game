@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 public class InventoryData
 {
-    public ItemData[,] Items { get; }
+    public InventoryItemData[,] Items { get; }
 
-    public ItemData[] HotbarItems { get; }
+    public InventoryItemData[] HotbarItems { get; }
 
-    public ItemData[] CraftingSlots { get; }
+    public InventoryItemData[] CraftingSlots { get; }
 
     public int SelectedHotbarIndex;
 
@@ -19,9 +19,9 @@ public class InventoryData
 
     public InventoryData()
     {
-        Items = new ItemData[numRows, numCols];
-        HotbarItems = new ItemData[10];
-        CraftingSlots = new ItemData[2];
+        Items = new InventoryItemData[numRows, numCols];
+        HotbarItems = new InventoryItemData[10];
+        CraftingSlots = new InventoryItemData[2];
         SelectedHotbarIndex = 0;
 
         for (int rows = 0; rows < numRows; ++rows)
@@ -41,7 +41,7 @@ public class InventoryData
         CraftingSlots[1] = null;
     }
 
-    public bool AddInventory(ItemData itemData)
+    public bool AddInventory(InventoryItemData itemData)
     {
         bool foundItem = false;
         bool successfullyAdded = false;
@@ -113,7 +113,7 @@ public class InventoryData
         return successfullyAdded;
     }
 
-    public bool MoveToHotbar(ItemData itemData, int index)
+    public bool MoveToHotbar(InventoryItemData itemData, int index)
     {
         bool successfullyMoved = false;      
 
@@ -137,7 +137,7 @@ public class InventoryData
         return successfullyMoved;
     }
 
-    public bool MoveToCrafting(ItemData itemData, int index)
+    public bool MoveToCrafting(InventoryItemData itemData, int index)
     {
         bool successfullyMoved = false;
 
@@ -161,7 +161,7 @@ public class InventoryData
         return successfullyMoved;
     }
 
-    public bool MoveToInventory(ItemData itemData, int row, int column)
+    public bool MoveToInventory(InventoryItemData itemData, int row, int column)
     {
         bool successfullyMoved = false;
 
@@ -203,7 +203,7 @@ public class InventoryData
         return true;
     }
 
-    public bool ClearItem(ItemData itemData)
+    public bool ClearItem(InventoryItemData itemData)
     {
         bool result = false;
         if(itemData.Quantity <= 0)
@@ -216,7 +216,7 @@ public class InventoryData
         return result;
     }
 
-    private void ClearOldItemLocation(ItemData itemData)
+    private void ClearOldItemLocation(InventoryItemData itemData)
     {
         for (int i = 0; i < HotbarItems.Length; ++i)
         {

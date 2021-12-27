@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6024060937362847966}
   - component: {fileID: 6024060937362847936}
   - component: {fileID: 6024060937362847937}
-  - component: {fileID: 6024060937362847941}
   - component: {fileID: 6191029908386238837}
   - component: {fileID: 6024060937362847939}
+  - component: {fileID: -7133863600877105894}
   m_Layer: 5
   m_Name: Crafting Slot
   m_TagString: Untagged
@@ -78,21 +78,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6024060937362847941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6024060937362847967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43ab556fd408768469aea3c4dc45026b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
-    type: 3}
-  ItemOffset: {x: 0, y: 40, z: 0}
 --- !u!114 &6191029908386238837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,3 +102,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &-7133863600877105894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6024060937362847967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43ab556fd408768469aea3c4dc45026b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemPrefab: {fileID: 4499694315276498787, guid: d535ab0a4d6cf62469ea4a4030617e9c,
+    type: 3}
+  ItemOffset: {x: 0, y: 40, z: 0}

@@ -9,7 +9,7 @@ namespace Assets.Scripts.Controllers
 {
     public class PickUpController : MonoBehaviour
     {
-        public ItemData ItemData;
+        public InventoryItemData ItemData;
 
         void Awake()
         {
@@ -31,7 +31,7 @@ namespace Assets.Scripts.Controllers
 
         
 
-        public void Initialize(ItemData itemData)
+        public void Initialize(InventoryItemData itemData)
         {
             ItemData = itemData;
         }

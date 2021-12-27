@@ -63,10 +63,15 @@ public class UIManager : Singleton<UIManager>
     }
 
 
+    public void GetMenuByItem(WorldItemData item)
+    {
+        string itemName = item.Name;
+
+        Debug.Log("Attempted to load menu for Item : " + item.Name);
+    }
 
     public void ToggleInventory()
-    {
-        
+    {        
         CanvasGroup canvasGroup = Inventory.GetComponent<CanvasGroup>();
 
         if(canvasGroup.alpha == 1)

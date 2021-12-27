@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool AddPlayerInventory(ItemData itemData)
+    public bool AddPlayerInventory(InventoryItemData itemData)
     {
         bool successfulAdd = PlayerData.InventoryData.AddInventory(itemData);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Droppables
@@ -12,19 +13,23 @@ namespace Assets.Scripts.Droppables
     {
         public override void HandleItemDropLeftClick(Draggable draggable, PointerEventData pointerEventData)
         {
+            Transform originalParent = draggable.transform.parent;
+
             base.HandleItemDropLeftClick(draggable, pointerEventData);
 
             SlotController craftingSlotController = GetComponent<SlotController>();
-            if (craftingSlotController != null && draggable.transform.parent != transform)
+            if (craftingSlotController != null && originalParent != transform)
             {
                 CraftingController craftingController = craftingSlotController.GetComponentInParent<CraftingController>();
-                ItemController itemController = draggable.GetComponent<ItemController>();
+                InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
                 InventoryData inventoryData = craftingController.PlayerData.InventoryData;
 
                 int endIndex = craftingController.GetCraftingSlotIndex(craftingSlotController);
 
                 //Moving items clears out old spots in the inventory
                 inventoryData.MoveToCrafting(itemController.GetItem(), endIndex);
+
+                craftingController.CheckForRecipe();
             }
         }
 
@@ -32,12 +37,12 @@ namespace Assets.Scripts.Droppables
         {
             base.HandleItemDropRightClick(draggable, pointerEventData);
 
-            ItemController itemController = draggable.GetComponent<ItemController>();
-            ItemData itemData = itemController?.GetItem();
+            InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
+            InventoryItemData itemData = itemController?.GetItem();
 
             //Move item to new location if stack was moved        
-            ItemController itemInDropSlot = GetComponentInChildren<ItemController>();
-            ItemData itemDataInDropSlot = itemInDropSlot?.GetItem();
+            InventoryItemController itemInDropSlot = GetComponentInChildren<InventoryItemController>();
+            InventoryItemData itemDataInDropSlot = itemInDropSlot?.GetItem();
             SlotController craftingSlotController = GetComponent<SlotController>();
             CraftingController craftingController = null;
             InventoryData inventoryData = null;
@@ -67,6 +72,8 @@ namespace Assets.Scripts.Droppables
                     inventoryData.MoveToCrafting(itemDataInDropSlot, endIndex);                
                 }
             }
+
+            craftingController.CheckForRecipe();
         }
     }
 }

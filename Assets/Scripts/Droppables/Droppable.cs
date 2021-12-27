@@ -60,17 +60,17 @@ namespace Assets.Scripts.Droppables
         {
             //TODO fix right clicking on the slot that the current draggable is from
             //If the item in the draggable is capable of being split we need to create a new game object with the split item data
-            ItemController itemController = draggable.GetComponent<ItemController>();
+            InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
             if (itemController != null)
             {
-                ItemController itemInDropSlot = GetComponentInChildren<ItemController>();
+                InventoryItemController itemInDropSlot = GetComponentInChildren<InventoryItemController>();
                 if (itemInDropSlot == null)
                 {
-                    ItemData itemData = itemController.GetItem();
+                    InventoryItemData itemData = itemController.GetItem();
                     if (itemData.Quantity > 1)
                     {
                         SlotController slotController = GetComponent<SlotController>();
-                        slotController.SetItem(new ItemData(itemData.Name, 1));
+                        slotController.SetItem(new InventoryItemData(itemData.Name, 1));
 
                         itemData.TakeFromItem(1);
                         itemController.RefreshItemText();
@@ -92,8 +92,8 @@ namespace Assets.Scripts.Droppables
                 }
                 else
                 {
-                    ItemData itemData = itemController.GetItem();
-                    ItemData itemDataInDropSlot = itemInDropSlot.GetItem();
+                    InventoryItemData itemData = itemController.GetItem();
+                    InventoryItemData itemDataInDropSlot = itemInDropSlot.GetItem();
 
                     if (itemData.Name == itemDataInDropSlot.Name && itemData != itemDataInDropSlot)
                     {

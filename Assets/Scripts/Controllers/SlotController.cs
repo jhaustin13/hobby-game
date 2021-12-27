@@ -15,20 +15,19 @@ public class SlotController : MonoBehaviour
     private GameObject Item;
     
 
-    public void SetItem(ItemData itemData)
+    public virtual void SetItem(InventoryItemData itemData)
     {
         Item = Instantiate(ItemPrefab);
         Item.transform.SetParent(transform);
         Item.transform.localPosition = ItemOffset;
 
-        ItemController ItemController = Item.GetComponent<ItemController>();
-        ItemController.Initialize();
-        ItemController.SetItemController(itemData);
+        InventoryItemController ItemController = Item.GetComponent<InventoryItemController>();
+        ItemController.Initialize(itemData);        
 
         GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
-    public void SetItem(GameObject item)
+    public virtual void SetItem(GameObject item)
     {
         Item = item;
         Item.transform.SetParent(transform);
@@ -37,11 +36,11 @@ public class SlotController : MonoBehaviour
         GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
-    public void RefreshItem()
+    public virtual void RefreshItem()
     {
         if(Item != null)
         {
-            Item.GetComponent<ItemController>().RefreshItemText();
+            Item.GetComponent<InventoryItemController>().RefreshItemText();
             GetComponent<CanvasGroup>().blocksRaycasts = false;
         }
         else

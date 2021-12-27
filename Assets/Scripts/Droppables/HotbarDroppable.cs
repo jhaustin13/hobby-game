@@ -13,13 +13,15 @@ namespace Assets.Scripts.Droppables
     {
         public override void HandleItemDropLeftClick(Draggable draggable, PointerEventData pointerEventData)
         {
+            Transform originalParent = draggable.transform.parent;
+
             base.HandleItemDropLeftClick(draggable, pointerEventData);
 
             SlotController hotbarSlotController = GetComponent<SlotController>();
-            if (hotbarSlotController != null && draggable.transform.parent != transform)
+            if (hotbarSlotController != null && originalParent != transform)
             {
                 HotbarController hotbarController = hotbarSlotController.GetComponentInParent<HotbarController>();
-                ItemController itemController = draggable.GetComponent<ItemController>();
+                InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
                 InventoryData inventoryData = hotbarController.PlayerData.InventoryData;
 
                 int endIndex = hotbarController.GetHotbarSlotIndex(hotbarSlotController);
@@ -36,12 +38,12 @@ namespace Assets.Scripts.Droppables
             //If there is already an item on the droppable we need to update inventory items
             base.HandleItemDropRightClick(draggable, pointerEventData);
 
-            ItemController itemController = draggable.GetComponent<ItemController>();
-            ItemData itemData = itemController?.GetItem();
+            InventoryItemController itemController = draggable.GetComponent<InventoryItemController>();
+            InventoryItemData itemData = itemController?.GetItem();
 
             //Move item to new location if stack was moved        
-            ItemController itemInDropSlot = GetComponentInChildren<ItemController>();
-            ItemData itemDataInDropSlot = itemInDropSlot?.GetItem();
+            InventoryItemController itemInDropSlot = GetComponentInChildren<InventoryItemController>();
+            InventoryItemData itemDataInDropSlot = itemInDropSlot?.GetItem();
 
             //Clear out old spot if the item is now empty
             if (itemController != null && itemData != null && itemData.Quantity == 0)
