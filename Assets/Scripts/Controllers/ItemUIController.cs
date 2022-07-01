@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Controllers
 {
-    public class UIController : MonoBehaviour
+    public class ItemUIController : MonoBehaviour
     {
         internal void Initialize(WorldItemData itemData)
         {

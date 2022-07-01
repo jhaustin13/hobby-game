@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Label text="Inventory" display-tooltip-when-elided="true" name="LblInventory" />
+    <ui:VisualElement name="InventoryContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: center; position: relative; -unity-background-scale-mode: scale-and-crop;" />
+</ui:UXML>

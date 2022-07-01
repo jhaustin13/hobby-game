@@ -24,7 +24,7 @@ namespace Assets.Scripts.Interactables
 
         public override void HandleRightClick(PlayerController playerController, RaycastHit hit)
         {
-            UIController uiController = hit.collider.gameObject.GetComponent<UIController>();
+            ItemUIController uiController = hit.collider.gameObject.GetComponent<ItemUIController>();
 
             if(uiController != null)
             {

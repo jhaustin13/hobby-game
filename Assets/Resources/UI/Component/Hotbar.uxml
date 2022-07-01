@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Component/Style/Hotbar.uss?fileID=7433441132597879392&amp;guid=50e0dadfd5e955346b8f43319b1da033&amp;type=3#Hotbar" />
+    <ui:VisualElement name="HotbarContainer" class="Hotbar" style="flex-direction: row; align-items: auto;" />
+</ui:UXML>

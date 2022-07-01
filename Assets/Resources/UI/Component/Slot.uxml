@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Component/Style/Slot.uss?fileID=7433441132597879392&amp;guid=62f21015f7978d0469d1907074aef160&amp;type=3#Slot" />
+    <ui:VisualElement name="SlotContainer" class="Slot" style="flex-grow: 1; position: absolute; background-color: rgba(255, 255, 255, 0.23);">
+        <ui:Label text="0" display-tooltip-when-elided="true" name="SlotNumber" style="position: absolute; right: 5px; bottom: 5px; background-color: rgba(0, 0, 0, 0); color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+</ui:UXML>

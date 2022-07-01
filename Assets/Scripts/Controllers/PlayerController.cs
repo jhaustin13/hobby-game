@@ -11,9 +11,16 @@ public class PlayerController : MonoBehaviour
     
     void Awake()
     {
-        PlayerData = new PlayerData();
+        Initialize();
     }
 
+    public void Initialize()
+    {
+        if(PlayerData == null)
+        {
+            PlayerData = new PlayerData();
+        }
+    }
 
     void OnGUI()
     {

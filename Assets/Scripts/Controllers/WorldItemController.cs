@@ -19,7 +19,7 @@ namespace Assets.Scripts.Controllers
 
             if(ItemData.Attributes.Contains(Attributes.UIInteractable))
             {
-                UIController uiController = gameObject.AddComponent<UIController>();
+                ItemUIController uiController = gameObject.AddComponent<ItemUIController>();
 
                 uiController.Initialize(ItemData);
 
