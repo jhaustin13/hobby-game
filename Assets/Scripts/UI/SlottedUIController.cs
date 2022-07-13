@@ -44,7 +44,7 @@ namespace Assets.Scripts.UI
         public virtual bool HandleItemCombine(ItemUIController startitemUIController, SlotUIController endSlotUIController)
         {
             //if combine successful on back end update ui on front end and remove from start slot
-            if(startitemUIController.InventoryItemData.Name.Equals(endSlotUIController.ItemUIController.InventoryItemData))
+            if(startitemUIController.InventoryItemData.Name.Equals(endSlotUIController.ItemUIController.InventoryItemData.Name))
             {
                 return InventoryData.AddItem(startitemUIController.InventoryItemData, endSlotUIController.Index);
             }
@@ -55,7 +55,7 @@ namespace Assets.Scripts.UI
         public virtual bool HandleItemCombine(InventoryItemData inventoryItemData, SlotUIController endSlotUIController)
         {
             //if combine successful on back end update ui on front end and remove from start slot
-            if (inventoryItemData.Name.Equals(endSlotUIController.ItemUIController.InventoryItemData))
+            if (inventoryItemData.Name.Equals(endSlotUIController.ItemUIController.InventoryItemData.Name))
             {
                 return InventoryData.AddItem(inventoryItemData, endSlotUIController.Index);
             }

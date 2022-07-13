@@ -150,6 +150,7 @@ namespace Assets.Scripts.Utilities
                         droppedSlotController.ParentUIController.HandleAddNewItem(droppedSlotController, newItemController);
 
                         droppedSlotController.AddItemController(newItemController);
+                        RegisterItem(newItemController.Root);
                     }
                     //if slot is not empty
                     else
@@ -191,7 +192,7 @@ namespace Assets.Scripts.Utilities
                 {
                     var droppedSlot = FindDroppedSlot(evt);
                     var droppedSlotController = droppedSlot.userData as SlotUIController;
-                    SelectionInfo.StartSlotController.RemoveItemControllerVisualElement();
+                    //SelectionInfo.StartSlotController.RemoveItemControllerVisualElement();
 
                     //if slot is empty
                     if (droppedSlotController.ItemUIController == null)
@@ -210,6 +211,8 @@ namespace Assets.Scripts.Utilities
                             var result = droppedSlotController.ParentUIController.HandleItemCombine(SelectionInfo.SelectedItemController, droppedSlotController);
                             if (result)
                             {
+                                SelectionInfo.SelectedItemController.Parent.Remove(SelectionInfo.SelectedItemController.Root);
+
                                 //No event fires for UI update so we need to update manually
                                 droppedSlotController.ItemUIController.UpdateItemUI();
                                 SelectionInfo = null;

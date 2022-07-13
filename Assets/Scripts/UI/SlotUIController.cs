@@ -67,7 +67,7 @@ namespace Assets.Scripts.UI
         public void RemoveItemControllerVisualElement()
         {
             var slotContainer = Root.Q<VisualElement>("SlotContainer");
-            var item = slotContainer.Q<VisualElement>("Item");
+            var item = slotContainer.Q<VisualElement>("ItemContainer");
             if(item != null)
             {
                 slotContainer.Remove(item);
