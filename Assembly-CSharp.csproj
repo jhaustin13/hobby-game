@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{3A49B293-6C84-638E-FD52-875DAA199DE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -67,48 +68,40 @@
     <Compile Include="Assets\Easy Character Movement\Scripts\@Obsolete\OrientModelToGround.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\BaseGroundDetection.cs" />
     <Compile Include="Assets\Scripts\Utilities\SimpleObjectPool.cs" />
-    <Compile Include="Assets\Scripts\Droppables\ItemDroppable.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUIController.cs" />
     <Compile Include="Assets\Scripts\Interactables\ChunkInteractable.cs" />
     <Compile Include="Assets\Scripts\UI\SlotUIController.cs" />
-    <Compile Include="Assets\Scripts\Droppables\Droppable.cs" />
     <Compile Include="Assets\Scripts\Controllers\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Models\MeshSkeletonTriVoxelMapModel.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\GroundHit.cs" />
     <Compile Include="Assets\Scripts\Controllers\PickUpController.cs" />
     <Compile Include="Assets\Scripts\Utilities\Pair.cs" />
-    <Compile Include="Assets\Scripts\Controllers\ItemUIController.cs" />
     <Compile Include="Assets\Scripts\Controllers\FlyCameraController.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryData.cs" />
-    <Compile Include="Assets\Scripts\Controllers\HotbarItemController.cs" />
     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Views\MainView.cs" />
     <Compile Include="Assets\Scripts\Controllers\WorldItemController.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryItemData.cs" />
-    <Compile Include="Assets\Scripts\Droppables\Draggable.cs" />
+    <Compile Include="Assets\Scripts\Utilities\DragAndDropUtility.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\GroundDetection.cs" />
-    <Compile Include="Assets\Scripts\Controllers\CraftingSlotController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseCharacterController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\Helpers\RecipeLibrary.cs" />
     <Compile Include="Assets\Scripts\Data\ChunkData.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseAgentController.cs" />
-    <Compile Include="Assets\Scripts\Controllers\SlotController.cs" />
-    <Compile Include="Assets\Scripts\Controllers\CraftingController.cs" />
     <Compile Include="Assets\Scripts\Controllers\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Controllers\TreeController.cs" />
     <Compile Include="Assets\Scripts\Data\PlayerData.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUIController.cs" />
-    <Compile Include="Assets\Scripts\Controllers\InventoryItemController.cs" />
     <Compile Include="Assets\Scripts\Data\WorldItemData.cs" />
-    <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
     <Compile Include="Assets\Scripts\Data\VoxelData.cs" />
     <Compile Include="Assets\Scripts\Helpers\MarchingCubesHelper.cs" />
     <Compile Include="Assets\Scripts\Interactables\UIInteractable.cs" />
+    <Compile Include="Assets\Scripts\UI\SlottedUIController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\MathLibrary.cs" />
-    <Compile Include="Assets\Scripts\Controllers\HotbarController.cs" />
     <Compile Include="Assets\Scripts\Data\WorldData.cs" />
     <Compile Include="Assets\Scripts\Models\MeshSkeletonVoxelModel.cs" />
+    <Compile Include="Assets\Scripts\Data\InventoryItemPlacementInfo.cs" />
     <Compile Include="Assets\Scripts\Helpers\MeshHelper.cs" />
     <Compile Include="Assets\Scripts\Helpers\Attributes.cs" />
     <Compile Include="Assets\Scripts\Controllers\ChunkController.cs" />
@@ -118,13 +111,13 @@
     <Compile Include="Assets\Scripts\Views\InventoryView.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Helpers\RootMotionController.cs" />
     <Compile Include="Assets\Scripts\UI\ItemUIController.cs" />
-    <Compile Include="Assets\Scripts\Droppables\HotbarDroppable.cs" />
+    <Compile Include="Assets\Scripts\Data\BaseInventoryData.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\@Obsolete\SphereGroundDetection.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryContainerUIController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\MouseLook.cs" />
+    <Compile Include="Assets\Scripts\Data\HotbarInventoryData.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\Extensions.cs" />
     <Compile Include="Assets\Scripts\Data\Coordinate.cs" />
-    <Compile Include="Assets\Scripts\Droppables\CraftingDroppable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\UI\Component\Style\Hotbar.uss" />
@@ -786,6 +779,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\Scripts\Managers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

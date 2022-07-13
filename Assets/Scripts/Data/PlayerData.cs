@@ -15,7 +15,7 @@ public class PlayerData
 
     public PlayerData()
     {
-        InventoryData = new InventoryData();
+        InventoryData = new InventoryData(10,10);
     }
 }
 

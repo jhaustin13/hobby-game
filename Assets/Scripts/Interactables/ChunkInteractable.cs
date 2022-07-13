@@ -73,8 +73,8 @@ namespace Assets.Scripts.Interactables
             {
                 PlayerData playerData = playerController.PlayerData;
 
-                int itemInHandIndex = playerData.InventoryData.SelectedHotbarIndex;
-                InventoryItemData itemInHand = playerData.InventoryData.HotbarItems[itemInHandIndex];
+                int itemInHandIndex = playerData.InventoryData.Hotbar.SelectedIndex;
+                InventoryItemData itemInHand = playerData.InventoryData.Hotbar.Items[itemInHandIndex];
                 if (itemInHand != null)
                 {
                     if(itemInHand.Attributes.Contains("Placeable"))
@@ -121,7 +121,7 @@ namespace Assets.Scripts.Interactables
 
                         if (placedAVoxel)
                         {
-                            UIManager.Instance.RefreshHotbar();
+                            //UIManager.Instance.RefreshHotbar();
                             chunkController.RefreshChunkMesh();
 
                             foreach (Coordinate coordinate in voxelsAndCoordinates.Second)

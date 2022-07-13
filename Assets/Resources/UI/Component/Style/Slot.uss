@@ -3,3 +3,11 @@
 	height: 80px;
 	margin: 2px;
 }
+
+.Selected {
+	background-color: rgba(255,255,255, .5)
+}
+
+.Slot:hover {
+		background-color: rgba(255,255,255, .35)
+	}

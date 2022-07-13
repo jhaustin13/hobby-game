@@ -24,17 +24,7 @@ namespace Assets.Scripts.Interactables
 
         public override void HandleRightClick(PlayerController playerController, RaycastHit hit)
         {
-            ItemUIController uiController = hit.collider.gameObject.GetComponent<ItemUIController>();
-
-            if(uiController != null)
-            {
-                WorldItemData item = uiController.GetComponent<WorldItemController>().ItemData;
-
-                
-                UIManager.Instance.GetMenuByItem(item);
-
-                //menu.Display();
-            }
+            Debug.Log("Right click on this UIInteractable produced no result");
         }
     }
 }

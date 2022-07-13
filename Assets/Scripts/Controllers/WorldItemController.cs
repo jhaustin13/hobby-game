@@ -17,14 +17,7 @@ namespace Assets.Scripts.Controllers
 
             ItemData = new WorldItemData(itemInHand, position, rotation, chunk);
 
-            if(ItemData.Attributes.Contains(Attributes.UIInteractable))
-            {
-                ItemUIController uiController = gameObject.AddComponent<ItemUIController>();
-
-                uiController.Initialize(ItemData);
-
-                UIInteractable uiInteractable = gameObject.AddComponent<UIInteractable>();
-            }
+           
 
             
         }

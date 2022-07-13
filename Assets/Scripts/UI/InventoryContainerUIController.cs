@@ -8,35 +8,31 @@ using UnityEngine.UIElements;
 
 namespace Assets.Scripts.UI
 {
-    public class InventoryContainerUIController : BaseUIController
-    {
-        public SlotUIController[] Slots { get; set; }
+    public class InventoryContainerUIController : SlottedUIController
+    {       
 
-        public InventoryData InventoryData { get; set; }
 
-        public InventoryContainerUIController (VisualElement parent, VisualElement root, InventoryData inventoryData)
+        public InventoryContainerUIController (VisualElement parent, VisualElement root, InventoryData inventoryData) : base(inventoryData.PlayerInventory)
         {
             Parent = parent;
             Root = root;
-            InventoryData = inventoryData;
 
             Root.userData = this;
-            var inventoryContainer = Root.Q<VisualElement>("InventoryContainer");
-            Slots = new SlotUIController[InventoryData.Items.GetLength(1)];
+            var inventoryContainer = Root.Q<VisualElement>("InventoryContainer");            
 
-            for (int i = 0; i < InventoryData.Items.GetLength(1); ++i)
+            for (int i = 0; i < InventoryData.Size; ++i)
             {
-                Slots[i] = new SlotUIController(inventoryContainer, InventoryData.Items[0, i]);
-
-                //var slotContainer = Slots[i].Root.Q<VisualElement>("SlotContainer");
-                //Slots[i].ItemUIController = new ItemUIController(slotContainer);
+                Slots[i] = new SlotUIController(inventoryContainer, InventoryData.Items[i], i);                
                 
+
                 //var clonedItem = item.CloneTree();
                 //clonedItem.visible = true;
                 //clonedItem.AddToClassList("Item");
 
                 //inventoryContainer.Add(clonedItem);                
             }
+            var slotContainer = Slots[0].Root.Q<VisualElement>("SlotContainer");
+            Slots[0].ItemUIController = new ItemUIController(slotContainer, new InventoryItemData());
         }
 
     }

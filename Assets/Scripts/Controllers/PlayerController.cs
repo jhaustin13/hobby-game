@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Controllers;
 using Assets.Scripts.Interactables;
+using Assets.Scripts.Views;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +34,8 @@ public class PlayerController : MonoBehaviour
     {
         PlayerData.Position = transform.position;
         
-        if(!UIManager.Instance.InventoryOpen)
+        //if(!UIManager.Instance.InventoryOpen)
+        if(!MainView.Instance.InventoryController.Inventory.visible)
         {
             if (Input.GetMouseButtonUp(0))
             { //Break voxel
@@ -85,7 +87,7 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            UIManager.Instance.ToggleInventory();
+            //UIManager.Instance.ToggleInventory();
         }
     }
 
@@ -97,7 +99,7 @@ public class PlayerController : MonoBehaviour
             if (AddPlayerInventory(pickUpController.ItemData))
             {
                 Destroy(pickUpController.gameObject);
-                UIManager.Instance.RefreshHotbar();
+                //UIManager.Instance.RefreshHotbar();
             }
         }
     }
