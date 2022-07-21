@@ -38,7 +38,7 @@ namespace Assets.Scripts.UI
 
         public virtual bool HandleClearItem(SlotUIController slotUIController)
         {
-            return InventoryData.ClearItem(slotUIController.ItemUIController.InventoryItemData, slotUIController.Index);
+            return InventoryData.ClearItem(slotUIController.Index);
         }
       
         public virtual bool HandleItemCombine(ItemUIController startitemUIController, SlotUIController endSlotUIController)
@@ -61,6 +61,26 @@ namespace Assets.Scripts.UI
             }
 
             return false;
+        }
+
+        public virtual object HandleItemDropped(SlotUIController droppedSlot)
+        {
+            return null;
+        }
+
+        public override void SetVisibility(bool visible)
+        {
+            Root.visible = visible;
+            foreach(var slot in Slots)
+            {
+                slot.Root.visible = visible;
+                if(slot.ItemUIController != null)
+                {
+                    slot.ItemUIController.Root.visible = visible;
+                    slot.ItemUIController.Root.Q<VisualElement>("Image").visible = visible;
+                }
+            }
+            
         }
     }
 }

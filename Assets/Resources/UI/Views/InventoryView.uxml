@@ -1,8 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Template name="CraftingTable" src="project://database/Assets/Resources/UI/Component/CraftingTable.uxml?fileID=9197481963319205126&amp;guid=97e67534fb24e0345a76952202a605e8&amp;type=3#CraftingTable" />
+    <ui:Template name="PlayerCraftingArea" src="project://database/Assets/Resources/UI/Component/PlayerCraftingArea.uxml?fileID=9197481963319205126&amp;guid=670a1295f260d7b4f8cb8f184c811ab7&amp;type=3#PlayerCraftingArea" />
     <ui:Template name="Inventory" src="project://database/Assets/Resources/UI/Component/Inventory.uxml?fileID=9197481963319205126&amp;guid=df2852ab66b3bba47a52a5b21b8cdae5&amp;type=3#Inventory" />
     <ui:Template name="Hotbar" src="project://database/Assets/Resources/UI/Component/Hotbar.uxml?fileID=9197481963319205126&amp;guid=d1996c902e9750f4b8c558c17ffedc64&amp;type=3#Hotbar" />
-    <ui:Instance template="CraftingTable" name="CraftingTable" style="display: flex; align-items: center; flex-grow: 1; max-height: 33%;" />
-    <ui:Instance template="Inventory" name="Inventory" style="background-color: rgba(0, 0, 0, 0.28); -unity-background-scale-mode: stretch-to-fill; flex-grow: 1; align-items: flex-start; height: 40%;" />
-    <ui:Instance template="Hotbar" name="Hotbar" style="bottom: auto; flex-grow: 0; align-items: center; justify-content: flex-end; max-height: none; min-height: auto; height: 25%;" />
+    <ui:VisualElement name="UpperArea" style="height: 50%; flex-direction: column; flex-wrap: nowrap;">
+        <ui:Instance template="PlayerCraftingArea" name="PlayerCraftingArea" style="height: auto;" />
+    </ui:VisualElement>
+    <ui:Instance template="Inventory" name="Inventory" style="background-color: rgba(0, 0, 0, 0.28); -unity-background-scale-mode: stretch-to-fill; flex-grow: 1; align-items: flex-start; height: 30%;" />
+    <ui:Instance template="Hotbar" name="Hotbar" style="bottom: auto; flex-grow: 0; align-items: center; justify-content: flex-end; max-height: none; min-height: auto; height: 20%;" />
 </ui:UXML>

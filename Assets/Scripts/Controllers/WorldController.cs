@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Controllers;
+using Assets.Scripts.ResourceManagement;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -138,7 +140,26 @@ public class WorldController : MonoBehaviour
 
     }
 
+    public WorldItemController PlaceItemInWorld(Vector3 position, Quaternion rotation, ChunkController chunkController, InventoryItemData inventoryItemData)
+    {
+        var itemInfo = ResourceCache.Instance.GetItemInfo(inventoryItemData.Id);        
+        var itemPosition = position + new Vector3(0, itemInfo.Bounds.extents.y, 0) ;
+        WorldItemData newItem = new WorldItemData(inventoryItemData, itemPosition, rotation, chunkController.ChunkData);
 
+        var placeableItem = Instantiate(itemInfo.ItemPrefab,itemPosition, rotation, chunkController.transform);            
+        var worldItemController = placeableItem.GetComponent<WorldItemController>();
+        
+        
+        if (worldItemController == null)
+        {
+            worldItemController = placeableItem.AddComponent<WorldItemController>();
+        }
+
+        worldItemController.Initialize(newItem);
+        chunkController.ChunkData.Items.Add(newItem);
+
+        return worldItemController;
+    }
 
     private VFace GetHitFace(RaycastHit hit)
     {

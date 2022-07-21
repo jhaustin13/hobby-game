@@ -10,6 +10,8 @@ public class InventoryData
 {
     public BaseInventoryData PlayerInventory { get; }
 
+    public BaseInventoryData PlayerCraftingTable { get; }
+
     public HotbarInventoryData Hotbar { get; }
 
     public InventoryItemData ItemInTransit { get; set; }
@@ -18,8 +20,9 @@ public class InventoryData
 
     public event EventHandler InventoryUpdated;
 
-    public InventoryData(int playerInventorySize, int hotBarSize)
+    public InventoryData(int playerInventorySize, int hotBarSize, int playerCraftingTableSize)
     {
+        PlayerCraftingTable = new BaseInventoryData(playerCraftingTableSize);
         PlayerInventory = new BaseInventoryData(playerInventorySize);
         Hotbar = new HotbarInventoryData(hotBarSize);             
     }

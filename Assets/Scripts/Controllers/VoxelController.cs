@@ -39,7 +39,7 @@ public class VoxelController : MonoBehaviour
             debugPrimitive.transform.parent = transform;
             debugPrimitive.transform.localPosition = Vector3.zero;
             debugPrimitive.transform.localScale = Vector3.one * .1f;
-
+            debugPrimitive.GetComponent<SphereCollider>().enabled = false;
            
         }
 

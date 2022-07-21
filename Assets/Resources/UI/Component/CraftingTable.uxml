@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:VisualElement name="CraftingArea" style="flex-direction: row; max-height: none; height: 100%; background-color: rgb(0, 0, 255); border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; align-items: auto; justify-content: flex-start; width: 30%;">
-        <ui:Label text="CraftingTable" display-tooltip-when-elided="true" style="height: 12px; position: absolute;" />
-        <ui:VisualElement name="CraftingTableContainer" style="height: 240px; flex-wrap: wrap; flex-direction: row; width: 240px; justify-content: flex-start; align-items: flex-start; position: absolute;" />
+    <Style src="project://database/Assets/Resources/UI/Component/Style/Crafting.uss?fileID=7433441132597879392&amp;guid=be8de6ea5a36d0f4eb5f7bba99e73b96&amp;type=3#Crafting" />
+    <ui:VisualElement name="CraftingArea" style="flex-direction: row; max-height: none; height: auto; background-color: rgb(0, 0, 255); border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; align-items: flex-start; justify-content: flex-start; width: auto; flex-wrap: wrap;">
+        <ui:VisualElement name="CraftingTableContainer" class="PlayerCraftingTable" style="flex-wrap: wrap; flex-direction: row; justify-content: flex-start; align-items: flex-start; position: relative;" />
+        <ui:VisualElement name="OutputContainer" style="height: 120px; width: 120px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; align-items: flex-start; justify-content: flex-start;" />
     </ui:VisualElement>
 </ui:UXML>

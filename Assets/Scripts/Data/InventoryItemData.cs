@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.ResourceManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,36 +10,42 @@ public class InventoryItemData
 {
     public string Name { get; protected set; }
 
+    public string Id { get; protected set; }
+
     public int Quantity { get; protected set; }
 
     public List<string> Attributes { get; protected set; }
-    public string ResourcePath { get; protected set; }
 
     public InventoryItemData()
     {
         Name = "Item";
+        Id = Name;
         Quantity = 1;
     }
 
-    public InventoryItemData(string name, int quantity)
-    {
-        Name = name;
-        Quantity = quantity;
-        Attributes = new List<string>();        
-    }
+  
 
     public InventoryItemData(string name, int quantity, List<string> attributes, string resourcePath) : this(name,quantity)
     {
         Attributes = attributes;
-        ResourcePath = resourcePath;
     }
 
     public InventoryItemData(InventoryItemData item)
     {
         Name = item.Name;
+        Id = item.Id;
         Quantity = item.Quantity;
         Attributes = item.Attributes;
-        ResourcePath = item.ResourcePath;
+    }
+
+    public InventoryItemData(string id, int quantity)
+    {
+        var itemInfo = ResourceCache.Instance.GetItemInfo(id);
+        Id = id;
+        Quantity = quantity;
+        Name = itemInfo.DefaultName;
+        Attributes = itemInfo.DefaultAttributes;
+        
     }
 
     public int AddToItem(int quantity)

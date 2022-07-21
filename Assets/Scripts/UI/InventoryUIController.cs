@@ -13,7 +13,7 @@ namespace Assets.Scripts.UI
     public class InventoryUIController : BaseUIController, IItemTransit
     {
         public VisualTreeAsset InventoryView { get; set; }
-        public VisualElement CraftingTable { get; set; }
+        public VisualElement PlayerCraftingArea { get; set; }
 
         public VisualElement Inventory { get; set; }
 
@@ -23,29 +23,30 @@ namespace Assets.Scripts.UI
 
         public InventoryContainerUIController InventoryContainerUIController {get; set;}
         public HotbarUIController HotbarUIController {get; set; }
+        public PlayerCraftingAreaUIController PlayerCraftingAreaUIController {get; set; }
+      
 
         public DragAndDropUtility DragAndDropUtility { get; set; }
 
-        public InventoryUIController(VisualElement parent, InventoryData inventoryData)
+        public InventoryUIController(VisualElement root, InventoryData inventoryData)
         {          
             InventoryData = inventoryData;
-            InventoryView = Resources.Load("UI/Views/InventoryView") as VisualTreeAsset;
-            var item = Resources.Load("UI/Component/Slot") as VisualTreeAsset;
 
-            //Root = Initialize(parent, InventoryView);
-            Root = parent;
+            Root = root;
             Root.userData = this;
             
 
             Inventory = Root.Q<VisualElement>("Inventory");
-            Hotbar = Root.Q<VisualElement>("Hotbar");            
+            Hotbar = Root.Q<VisualElement>("Hotbar");
+            PlayerCraftingArea = Root.Q<VisualElement>("PlayerCraftingArea");
+
             InventoryContainerUIController = new InventoryContainerUIController(Root, Inventory, InventoryData);
             HotbarUIController = new HotbarUIController(Root, Hotbar, InventoryData.Hotbar);
-
-
+            PlayerCraftingAreaUIController = new PlayerCraftingAreaUIController(Root, PlayerCraftingArea, InventoryData.PlayerCraftingTable);
 
             var slots = InventoryContainerUIController.Slots.Select(x => x.Root).ToList();
             slots.AddRange(HotbarUIController.Slots.Select(x => x.Root));
+            slots.AddRange(PlayerCraftingAreaUIController.CraftingTableUIController.Slots.Select(x => x.Root));
 
 
             var controllers = new BaseUIController[] { InventoryContainerUIController, HotbarUIController };
@@ -53,6 +54,11 @@ namespace Assets.Scripts.UI
             DragAndDropUtility = new DragAndDropUtility(slots.ToArray(), controllers, this);
 
             InventoryData.InventoryUpdated += InventoryData_InventoryUpdated;
+        }
+
+        public void LoadUpperArea()
+        {
+
         }
 
         private void InventoryData_InventoryUpdated(object sender, EventArgs e)
@@ -91,15 +97,17 @@ namespace Assets.Scripts.UI
         public void ToggleInventoryUI(MouseLook mouseLook)
         {           
             Inventory.visible = !Inventory.visible;
-            foreach(var slot in InventoryContainerUIController.Slots)
-            {
-                slot.Root.visible = Inventory.visible;
-                if(slot.ItemUIController != null)
-                {
-                    slot.ItemUIController.Root.visible = Inventory.visible;
-                    slot.ItemUIController.Root.Q<VisualElement>("Image").visible = Inventory.visible;
-                }
-            }
+            InventoryContainerUIController.SetVisibility(Inventory.visible);
+            PlayerCraftingAreaUIController.SetVisibility(Inventory.visible);
+            //foreach(var slot in InventoryContainerUIController.Slots)
+            //{
+            //    slot.Root.visible = Inventory.visible;
+            //    if(slot.ItemUIController != null)
+            //    {
+            //        slot.ItemUIController.Root.visible = Inventory.visible;
+            //        slot.ItemUIController.Root.Q<VisualElement>("Image").visible = Inventory.visible;
+            //    }
+            //}
             mouseLook.SetCursorLock(!Inventory.visible);
             //CraftingTable.visible = Inventory.visible;
         }

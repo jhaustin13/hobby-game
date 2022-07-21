@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="CraftingTable" src="project://database/Assets/Resources/UI/Component/CraftingTable.uxml?fileID=9197481963319205126&amp;guid=97e67534fb24e0345a76952202a605e8&amp;type=3#CraftingTable" />
+    <ui:VisualElement name="PlayerCraftingArea" style="flex-direction: row;">
+        <ui:VisualElement name="RecipeSearchArea" style="width: 50%;" />
+        <ui:Instance template="CraftingTable" name="CraftingTable" />
+    </ui:VisualElement>
+</ui:UXML>

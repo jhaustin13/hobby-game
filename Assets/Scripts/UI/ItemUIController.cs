@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.ResourceManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,12 @@ namespace Assets.Scripts.UI
 
             Image = ImageContainer.Q<VisualElement>("Image");
             Label = ImageContainer.Q<Label>("Quantity");
+
+            Image.style.backgroundImage = new StyleBackground(ResourceCache.Instance.GetItemInfo(InventoryItemData.Id).IconImage);
+         
+            
+
+            UpdateItemUI();
         }
 
         public void UpdateItemUI()
@@ -40,21 +47,7 @@ namespace Assets.Scripts.UI
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(InventoryItemData.ResourcePath))
-            {
-                Debug.Log("Attempted to load image for item at " + InventoryItemData.ResourcePath);
-                var splitPath = InventoryItemData.ResourcePath.Split('_');
-                var sprites = Resources.LoadAll<Sprite>(splitPath[0]);
-
-                if (splitPath.Length > 1)
-                {
-                    Image.style.backgroundImage = new StyleBackground(sprites[Convert.ToInt32(splitPath[1])]);
-                }
-                else
-                {
-                    Image.style.backgroundImage = new StyleBackground(sprites[0]);
-                }
-            }
+          
             Label.text = InventoryItemData.Quantity.ToString();
 
         }

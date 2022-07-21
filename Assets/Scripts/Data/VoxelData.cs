@@ -16,6 +16,6 @@ public class VoxelData
     {
         State = state;
         Position = position;
-        ParentChunk = parentChunk;
+        ParentChunk = parentChunk;        
     }
 }

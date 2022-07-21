@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Data
 {
@@ -20,9 +21,9 @@ namespace Assets.Scripts.Data
 
         public int SetSelectedIndex(int index)
         {
-            if(index > 0 && index < Size)
+            if(index >= 0 && index < Size)
             {
-                SelectedIndex = index;
+                SelectedIndex = index;                
             }
 
             return SelectedIndex;

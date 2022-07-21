@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Assets.Scripts.UI
@@ -46,11 +47,14 @@ namespace Assets.Scripts.UI
         {
             var hotbarInventory = InventoryData as HotbarInventoryData;
             Slots[SelectedIndex].Root.RemoveFromClassList("Selected");
-
-            SelectedIndex = HandleIndexChange(SelectedIndex + amount);
+  
+            var proposedChangedSelectedIndex = SelectedIndex + amount;
+            SelectedIndex = HandleIndexChange(proposedChangedSelectedIndex);
+            
             hotbarInventory.SetSelectedIndex(SelectedIndex);
 
             Slots[SelectedIndex].Root.AddToClassList("Selected");
+           
         }
 
         public void SetSelectedIndex(int index)

@@ -35,23 +35,24 @@ namespace Assets.Scripts.Views
                 InventoryController.ToggleInventoryUI(mouseLook);
                 
             }
+
+            //Event e = Event.current;
+
+        
+            if (Input.mouseScrollDelta.y > 0)
+            {
+                InventoryController.HotbarUIController.IncrementSelectedIndex(-1);
+            }
+            else if(Input.mouseScrollDelta.y < 0)
+            {
+                InventoryController.HotbarUIController.IncrementSelectedIndex(1);
+            }
+            
         }
 
         private void OnGUI()
         {
-            Event e = Event.current;
-
-            if (e.isScrollWheel)
-            {
-                if (e.delta.y > 0)
-                {
-                    InventoryController.HotbarUIController.IncrementSelectedIndex(1);
-                }
-                else
-                {
-                    InventoryController.HotbarUIController.IncrementSelectedIndex(-1);
-                }
-            }
+           
         }
     }
 }

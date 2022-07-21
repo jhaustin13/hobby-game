@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.ResourceManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,20 +9,19 @@ namespace Assets.Scripts.Helpers
 {
     public class RecipeLibrary
     {
-        private static Dictionary<string, InventoryItemData> Recipes = new Dictionary<string, InventoryItemData>
+        private static RecipeEqualityComparer _recipeEqualityComparer = new RecipeEqualityComparer();
+        private static Dictionary<InventoryItemData[], InventoryItemData> Recipes = new Dictionary<InventoryItemData[], InventoryItemData>(_recipeEqualityComparer)
         {
-            {"WoodWood", new InventoryItemData("Wood Plank", 2, new List<string> (){Attributes.Placeable }, "Images/resources_1") },
-            {"Wood PlankWood Plank", new InventoryItemData("Crafting Table", 1, new List<string> (){Attributes.Placeable, Attributes.UIInteractable }, "Images/resources_0" )}
+            {new InventoryItemData[] { new InventoryItemData(ItemIds.Wood,1)}, new InventoryItemData(ItemIds.WoodPlank, 2 )},
+            {new InventoryItemData[] { new InventoryItemData(ItemIds.WoodPlank,1), new InventoryItemData(ItemIds.WoodPlank, 1)}, new InventoryItemData(ItemIds.CraftingTable, 1)}
         };
 
         public static InventoryItemData ValidateRecipe(IEnumerable<InventoryItemData> items)
         {
-            string recipeId = string.Join(string.Empty, items.Select(x => x.Name));
-
-            return ValidateRecipe(recipeId);
+            return ValidateRecipe(items.ToArray());
         }
 
-        public static InventoryItemData ValidateRecipe(string recipe)
+        public static InventoryItemData ValidateRecipe(InventoryItemData[] recipe)
         {
             InventoryItemData item = null;
             if(Recipes.ContainsKey(recipe))

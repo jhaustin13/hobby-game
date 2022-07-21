@@ -22,17 +22,8 @@ namespace Assets.Scripts.UI
 
             for (int i = 0; i < InventoryData.Size; ++i)
             {
-                Slots[i] = new SlotUIController(inventoryContainer, InventoryData.Items[i], i);                
-                
-
-                //var clonedItem = item.CloneTree();
-                //clonedItem.visible = true;
-                //clonedItem.AddToClassList("Item");
-
-                //inventoryContainer.Add(clonedItem);                
+                Slots[i] = new SlotUIController(inventoryContainer, InventoryData.Items[i], i);                            
             }
-            var slotContainer = Slots[0].Root.Q<VisualElement>("SlotContainer");
-            Slots[0].ItemUIController = new ItemUIController(slotContainer, new InventoryItemData());
         }
 
     }

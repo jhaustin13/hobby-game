@@ -10,18 +10,23 @@ namespace Assets.Scripts.Controllers
 {
     public class WorldItemController : MonoBehaviour
     {
-        public WorldItemData ItemData { get; protected set; }
+        public WorldItemData WorldItemData { get; protected set; }
 
         internal void Initialize(InventoryItemData itemInHand, Vector3 position, Quaternion rotation, ChunkData chunk)
         {
 
-            ItemData = new WorldItemData(itemInHand, position, rotation, chunk);
+            WorldItemData = new WorldItemData(itemInHand, position, rotation, chunk);
 
            
 
             
         }
-       
+
+        public void Initialize(WorldItemData worldItemData)
+        {
+            WorldItemData = worldItemData;
+        }
+
 
 
     }

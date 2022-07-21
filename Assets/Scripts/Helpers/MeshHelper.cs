@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 public class MeshHelper
@@ -231,5 +232,74 @@ public class MeshHelper
         return 0;
     }
 
+    public static Vector3 GetMidpoint(Vector3 point1, Vector3 point2)
+    {
+        return new Vector3((point1.x + point2.x) / 2, (point1.y + point2.y) / 2, (point1.z + point2.z) / 2);
+    }
+
+    public static Vector3 GetCentroid(params Vector3[] points)
+    {
+        float centroidX = 0f;
+        float centroidY = 0f;
+        float centroidZ = 0f;
+
+        int pointCount = points.Length;
+
+        foreach (var point in points)
+        {
+            centroidX += point.x;
+            centroidY += point.y;
+            centroidZ += point.z;
+        }
+
+        return new Vector3(centroidX / pointCount, centroidY / pointCount, centroidZ / pointCount);
+    }
+
+
+    public static Bounds GetRotatedBounds(Bounds bounds, Quaternion rotation)
+    {
+        var aabb = new List<Vector3>();
+        var extents = bounds.extents;
+
+        aabb.Add(extents);
+        aabb.Add(Vector3.Reflect(extents, Vector3.forward));
+        aabb.Add(Vector3.Reflect(extents, Vector3.back));
+        aabb.Add(Vector3.Reflect(extents, Vector3.up));
+        aabb.Add(Vector3.Reflect(extents, Vector3.down));
+        aabb.Add(Vector3.Reflect(extents, Vector3.right));
+        aabb.Add(Vector3.Reflect(extents, Vector3.left));
+        aabb.Add(Vector3.Reflect(extents, Vector3.one * -1));
+
+        var newAabb = new List<Vector3>();
+
+        foreach (var point in aabb)
+        {
+            newAabb.Add(rotation * point);
+        }
+
+        var maxX = 0f;
+        var maxY = 0f;
+        var maxZ = 0f;
+
+        foreach(var point in newAabb)
+        {
+            if(point.x > maxX)
+            {
+                maxX = point.x;
+            }
+
+            if(point.y > maxY)
+            {
+                maxY = point.y;
+            }
+
+            if (point.z > maxZ)
+            {
+                maxZ = point.z;
+            }
+        }
+
+        return new Bounds(bounds.center, new Vector3(maxX * 2, maxY * 2, maxZ * 2));
+    }
 }
 

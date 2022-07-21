@@ -1,5 +1,6 @@
 ﻿
 using Assets.Scripts.Controllers;
+using Assets.Scripts.ResourceManagement;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,12 +29,12 @@ namespace Assets.Scripts.Interactables
 
             for(int i = 0; i < volumeCeiling; ++i)
             {
-                GameObject wood = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Wood"));
+                GameObject wood = Instantiate(ResourceCache.Instance.GetItemInfo(ItemIds.Wood).ItemPrefab);
 
                 wood.transform.parent = treeController.transform.parent;
 
                 PickUpController pickupController = wood.GetComponent<PickUpController>();
-                pickupController.Initialize(new InventoryItemData("Wood", 1, new List<string>() {  }, "Images/resources_2"));
+                pickupController.Initialize(new InventoryItemData(ItemIds.Wood, 1));
 
                 int randomVert = Random.Range(0, mesh.vertices.Length);
 

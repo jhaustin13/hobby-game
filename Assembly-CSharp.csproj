@@ -75,8 +75,11 @@
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\GroundHit.cs" />
     <Compile Include="Assets\Scripts\Controllers\PickUpController.cs" />
     <Compile Include="Assets\Scripts\Utilities\Pair.cs" />
+    <Compile Include="Assets\Scripts\Helpers\RecipeEqualityComparer.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\TerrainInfo.cs" />
     <Compile Include="Assets\Scripts\Controllers\FlyCameraController.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryData.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\ResourcePaths.cs" />
     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Views\MainView.cs" />
     <Compile Include="Assets\Scripts\Controllers\WorldItemController.cs" />
@@ -87,13 +90,17 @@
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\Helpers\RecipeLibrary.cs" />
     <Compile Include="Assets\Scripts\Data\ChunkData.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\AttributePresets.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\ResourceCache.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseAgentController.cs" />
     <Compile Include="Assets\Scripts\Controllers\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\UI\CraftingTableUIController.cs" />
     <Compile Include="Assets\Scripts\Controllers\TreeController.cs" />
     <Compile Include="Assets\Scripts\Data\PlayerData.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUIController.cs" />
     <Compile Include="Assets\Scripts\Data\WorldItemData.cs" />
     <Compile Include="Assets\Scripts\Data\VoxelData.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\ItemInfo.cs" />
     <Compile Include="Assets\Scripts\Helpers\MarchingCubesHelper.cs" />
     <Compile Include="Assets\Scripts\Interactables\UIInteractable.cs" />
     <Compile Include="Assets\Scripts\UI\SlottedUIController.cs" />
@@ -104,6 +111,7 @@
     <Compile Include="Assets\Scripts\Helpers\MeshHelper.cs" />
     <Compile Include="Assets\Scripts\Helpers\Attributes.cs" />
     <Compile Include="Assets\Scripts\Controllers\ChunkController.cs" />
+    <Compile Include="Assets\Scripts\ResourceManagement\ItemIds.cs" />
     <Compile Include="Assets\Scripts\Controllers\BirdsEyeCameraController.cs" />
     <Compile Include="Assets\Scripts\Controllers\VoxelController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\@Obsolete\RaycastGroundDetection.cs" />
@@ -117,15 +125,19 @@
     <Compile Include="Assets\Scripts\Data\HotbarInventoryData.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\Extensions.cs" />
     <Compile Include="Assets\Scripts\Data\Coordinate.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerCraftingAreaUIController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\UI\Component\Style\Hotbar.uss" />
     <None Include="Assets\Resources\UI\Component\Hotbar.uxml" />
     <None Include="Assets\Resources\UI\Component\Style\Slot.uss" />
+    <None Include="Assets\Resources\UI\Component\WorldCraftingTable.uxml" />
     <None Include="Assets\Resources\UI\Views\InventoryView.uxml" />
+    <None Include="Assets\Resources\UI\Component\PlayerCraftingArea.uxml" />
     <None Include="Assets\Resources\UI\Component\CraftingTable.uxml" />
     <None Include="Assets\Easy Character Movement\README.txt" />
     <None Include="Assets\Resources\UI\Component\Item.uxml" />
+    <None Include="Assets\Resources\UI\Component\Style\Crafting.uss" />
     <None Include="Assets\Resources\UI\Component\Slot.uxml" />
     <None Include="Assets\Resources\UI\Component\Style\Item.uss" />
     <None Include="Assets\Resources\UI\Component\Inventory.uxml" />

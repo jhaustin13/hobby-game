@@ -89,7 +89,7 @@ namespace Assets.Scripts.Data
             return placedItem;
         }
 
-        public virtual bool ClearItem(InventoryItemData inventoryItemData, int index)
+        public virtual bool ClearItem(int index)
         {
             bool successfullyCleared = false;
 
@@ -100,6 +100,24 @@ namespace Assets.Scripts.Data
             }
 
             return successfullyCleared;
+        }
+
+        public virtual int UseItem(int index, int amountToUse)
+        {
+            int itemsUsed = 0;
+
+            if (Items[index] != null)
+            {
+                itemsUsed = Items[index].TakeFromItem(amountToUse);
+
+                if(Items[index].Quantity <= 0)
+                {
+                    ClearItem(index);
+                }
+
+            }
+
+            return itemsUsed;
         }
     }
 }

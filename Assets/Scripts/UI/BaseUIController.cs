@@ -46,5 +46,17 @@ namespace Assets.Scripts.UI
         {           
             return Initialize(parent, Resources.Load<VisualTreeAsset>(sourcePath), classList);
         }
+
+        public virtual void SetVisibility(bool visible)
+        {
+            if(visible)
+            {
+                Root.style.visibility = Visibility.Visible;
+            }
+            else
+            {
+                Root.style.visibility = Visibility.Hidden;
+            }
+        }
     }
 }

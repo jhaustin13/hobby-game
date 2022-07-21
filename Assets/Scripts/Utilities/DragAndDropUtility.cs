@@ -138,7 +138,6 @@ namespace Assets.Scripts.Utilities
                     //if slot is empty
                     if (droppedSlotController.ItemUIController == null)
                     {
-
                         var slotContainer = droppedSlotController.Root.Q<VisualElement>("SlotContainer");
                         var itemData = new InventoryItemData(SelectionInfo.SelectedItemController.InventoryItemData);
                         itemData.TakeFromItem(SelectionInfo.SelectedItemController.InventoryItemData.Quantity - 1);
@@ -151,6 +150,14 @@ namespace Assets.Scripts.Utilities
 
                         droppedSlotController.AddItemController(newItemController);
                         RegisterItem(newItemController.Root);
+
+                        //We are assuming any result coming back from this is from the crafting table at the moment
+                        VisualElement outputItem = droppedSlotController.ParentUIController.HandleItemDropped(droppedSlotController) as VisualElement;
+
+                        if (outputItem != null)
+                        {
+                            RegisterItem(outputItem);
+                        }
                     }
                     //if slot is not empty
                     else
@@ -169,8 +176,6 @@ namespace Assets.Scripts.Utilities
                                 ItemTransitHandler.OnSplitSingleItemInTransit();
                                 SelectionInfo.SelectedItemController.UpdateItemUI();
                             }
-                           
-
                         }
                     }
                 }
@@ -192,7 +197,6 @@ namespace Assets.Scripts.Utilities
                 {
                     var droppedSlot = FindDroppedSlot(evt);
                     var droppedSlotController = droppedSlot.userData as SlotUIController;
-                    //SelectionInfo.StartSlotController.RemoveItemControllerVisualElement();
 
                     //if slot is empty
                     if (droppedSlotController.ItemUIController == null)
@@ -206,7 +210,7 @@ namespace Assets.Scripts.Utilities
                     else
                     {
                         //if item matches the item we are dropping try to combine
-                        if (droppedSlotController.ItemUIController.InventoryItemData.Name.Equals(SelectionInfo.SelectedItemController.InventoryItemData.Name))
+                        if (droppedSlotController.ItemUIController.InventoryItemData.Id.Equals(SelectionInfo.SelectedItemController.InventoryItemData.Id))
                         {
                             var result = droppedSlotController.ParentUIController.HandleItemCombine(SelectionInfo.SelectedItemController, droppedSlotController);
                             if (result)
@@ -232,24 +236,25 @@ namespace Assets.Scripts.Utilities
                             SelectionInfo = null;
                             ItemTransitHandler.ClearTransit();
 
-
                             SelectionInfo = new SelectionInfo();
                             SelectionInfo.Target = tempItem.Root;
                             SelectionInfo.PointerStartPosition = evt.position;
                             SelectionInfo.Target.CapturePointer(evt.pointerId);
                             SelectionInfo.ItemStartPosition = SelectionInfo.Target.transform.position;
                             SelectionInfo.SelectedItemController = tempItem;
-                            SelectionInfo.StartSlotController = droppedSlotController;                           
-
+                            SelectionInfo.StartSlotController = droppedSlotController;
 
                             //Backend handle floating item
                             ItemTransitHandler.OnTransit(SelectionInfo.SelectedItemController.InventoryItemData);
-                            //Backend clear item from inventory
-                            //SelectionInfo.StartSlotController.ParentUIController.HandleClearItem(SelectionInfo.StartSlotController);
-                           
                         }
-                        //if item does not match do nothing or swap selection?
-                    }             
+                    }
+                    //We are assuming any result coming back from this is from the crafting table at the moment
+                    VisualElement item = droppedSlotController.ParentUIController.HandleItemDropped(droppedSlotController) as VisualElement;
+
+                    if(item != null)
+                    {
+                        RegisterItem(item);
+                    }
                 }
             }
         }
@@ -259,11 +264,18 @@ namespace Assets.Scripts.Utilities
             if( SelectionInfo == null )
             { 
                 SelectionInfo = new SelectionInfo(evt);
-
                 //Backend handle floating item
                 ItemTransitHandler.OnTransit(SelectionInfo.SelectedItemController.InventoryItemData);
-                //Backend clear item from inventory
-                SelectionInfo.StartSlotController.ParentUIController.HandleClearItem(SelectionInfo.StartSlotController);
+
+                if(SelectionInfo.StartSlotController.Root.GetClasses().FirstOrDefault(x => x.Contains("Output", StringComparison.CurrentCultureIgnoreCase)) != null)
+                {
+                    ((CraftingTableUIController)SelectionInfo.StartSlotController.ParentUIController).HandleCraftItem();                    
+                }
+                else
+                {
+                    //Backend clear item from inventory
+                    SelectionInfo.StartSlotController.ParentUIController.HandleClearItem(SelectionInfo.StartSlotController);
+                }
                 SelectionInfo.StartSlotController.RemoveItemControllerReference();
             }
         }
@@ -290,7 +302,6 @@ namespace Assets.Scripts.Utilities
                 switch (evt.button)
                 {
                     case (int)MouseButton.LeftMouse:
-                        HandlePointerDownSlotLeftClickSelection(evt);
                         break;
                     case (int)MouseButton.RightMouse:
                         break;
@@ -301,21 +312,14 @@ namespace Assets.Scripts.Utilities
 
         }
 
-        private void HandlePointerDownSlotLeftClickSelection(PointerDownEvent evt)
-        {
-           
-        }
-
         private VisualElement FindDroppedSlot(PointerDownEvent evt)
         {
             foreach (VisualElement slot in Slots)
             {
-                //if(slot.worldBound.Contains(SelectionInfo.Target.LocalToWorld(SelectionInfo.Target.transform.position)))
                 if (slot.worldBound.Contains(evt.position))
                 {
                     return slot;
                 }
-            
             }
 
             return null;

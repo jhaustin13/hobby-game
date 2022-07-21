@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Controllers;
+using Assets.Scripts.ResourceManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Assets.Scripts.Interactables
                 VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
                 WorldController worldController = chunkController.GetComponentInParent<WorldController>();
 
-                var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
+                var voxelsAndCoordinates = chunkController.ChunkData.GetRelatedVoxelsAtVoxel(voxelData);
 
                 List<VoxelData> voxels = voxelsAndCoordinates.First;
 
@@ -29,7 +30,7 @@ namespace Assets.Scripts.Interactables
                     if (v.State != 0)
                     {
                         //Create pickups that are of the terrain type needed
-                        GameObject pickup = Instantiate(Resources.Load("Prefabs/Dirt Pickup")) as GameObject;
+                        GameObject pickup = Instantiate(ResourceCache.Instance.GetItemInfo(ItemIds.Dirt).ItemPrefab) as GameObject;
                         pickup.transform.parent = chunkController.transform;
                         pickup.transform.position = hitInfo.point;
                         pickup.GetComponent<Rigidbody>().AddForce(Vector3.up);
@@ -40,7 +41,7 @@ namespace Assets.Scripts.Interactables
                             pickup.AddComponent<PickUpController>();
                         }
 
-                        pickUpController.Initialize(new InventoryItemData("Dirt", 1, new List<string>() {Attributes.Terrain}, "Images/dirtblock"));
+                        pickUpController.Initialize(new InventoryItemData(ItemIds.Dirt, 1));
 
                         v.State = 0;
                     }
@@ -72,7 +73,6 @@ namespace Assets.Scripts.Interactables
             if (chunkController != null)
             {
                 PlayerData playerData = playerController.PlayerData;
-
                 int itemInHandIndex = playerData.InventoryData.Hotbar.SelectedIndex;
                 InventoryItemData itemInHand = playerData.InventoryData.Hotbar.Items[itemInHandIndex];
                 if (itemInHand != null)
@@ -81,14 +81,16 @@ namespace Assets.Scripts.Interactables
                     {
                         if(playerData.InventoryData.UseSelectedItem(1))
                         {
-                            //TODO : create a lookup for placeable item prefabs
-                            GameObject placeableItem = GameObject.CreatePrimitive(PrimitiveType.Cube);                            
-                            WorldItemController itemController = placeableItem.AddComponent<WorldItemController>();                            
-                            
-                            placeableItem.transform.parent = chunkController.transform;
-                            placeableItem.transform.position = hitInfo.point + new Vector3(0,0.5f,0);
+                            WorldController worldController = chunkController.GetComponentInParent<WorldController>();
 
-                            itemController.Initialize(itemInHand, placeableItem.transform.position, placeableItem.transform.rotation, chunkController.ChunkData);
+                            //TODO : create a lookup for placeable item prefabs
+                            var itemInfo = ResourceCache.Instance.GetItemInfo(itemInHand.Id);
+                            if(itemInfo.ItemPrefab != null)
+                            {                               
+                                //worldItemController.Initialize(itemInHand, itemPosition, Quaternion.identity, chunkController.ChunkData);
+                                worldController.PlaceItemInWorld(hitInfo.point, Quaternion.identity, chunkController, itemInHand);
+                            }
+                                                          
                         }
                     }
 
@@ -99,7 +101,7 @@ namespace Assets.Scripts.Interactables
 
                         VoxelData voxelData = chunkController.TriVoxelMap[hitInfo.triangleIndex];
 
-                        var voxelsAndCoordinates = chunkController.GetRelatedVoxelsAtVoxel(voxelData);
+                        var voxelsAndCoordinates = chunkController.ChunkData.GetRelatedVoxelsAtVoxel(voxelData);
 
                         List<VoxelData> voxels = voxelsAndCoordinates.First;
 
