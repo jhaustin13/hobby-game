@@ -77,9 +77,9 @@ namespace Assets.Scripts.Interactables
                 InventoryItemData itemInHand = playerData.InventoryData.Hotbar.Items[itemInHandIndex];
                 if (itemInHand != null)
                 {
-                    if(itemInHand.Attributes.Contains("Placeable"))
+                    if(itemInHand.Attributes.Contains(Attributes.Placeable))
                     {
-                        if(playerData.InventoryData.UseSelectedItem(1))
+                        if(playerData.InventoryData.UseSelectedItem(1, true))
                         {
                             WorldController worldController = chunkController.GetComponentInParent<WorldController>();
 
@@ -94,7 +94,7 @@ namespace Assets.Scripts.Interactables
                         }
                     }
 
-                    if (itemInHand.Name == "Dirt" || itemInHand.Attributes.Contains("Terrain"))
+                    if (itemInHand.Name == "Dirt" || itemInHand.Attributes.Contains(Attributes.Terrain))
                     {
                         GameObject chunk = hitInfo.collider.gameObject;                       
                         WorldController worldController = chunkController.GetComponentInParent<WorldController>();
@@ -113,7 +113,7 @@ namespace Assets.Scripts.Interactables
                         {
                             if (v.State == 0 && itemInHand != null && itemInHand.Quantity > 0)
                             {
-                                if (playerData.InventoryData.UseSelectedItem(1))
+                                if (playerData.InventoryData.UseSelectedItem(1, true))
                                 {
                                     placedAVoxel = true;
                                     v.State = 1;

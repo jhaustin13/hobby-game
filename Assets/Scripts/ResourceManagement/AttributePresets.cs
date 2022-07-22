@@ -10,6 +10,8 @@ namespace Assets.Scripts.ResourceManagement
     {
         public static readonly List<string> InteractableWorldItem = new List<string>() { Attributes.Placeable, Attributes.UIInteractable };
 
+        public static readonly List<string> CraftingTable = new List<string>() { Attributes.Placeable, Attributes.UIInteractable, Attributes.Slot9Inventory };
+
         public static readonly List<string> PlaceableItem = new List<string>() { Attributes.Placeable };
 
         public static readonly List<string> Terrain = new List<string>() { Attributes.Terrain };

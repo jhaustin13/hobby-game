@@ -8,24 +8,23 @@ using UnityEngine.UIElements;
 
 namespace Assets.Scripts.UI
 {
-    public class PlayerCraftingAreaUIController : BaseUIController
+    public class WorldCraftingAreaUIController : BaseUIController
     {
-
         public CraftingTableUIController CraftingTableUIController { get; set; }
 
-        public PlayerCraftingAreaUIController(VisualElement parent, VisualElement root, BaseInventoryData craftingTableInventory)
+        public void InitializeCraftingTable(BaseInventoryData craftingTableInventory)
         {
-            Parent = parent;
-            Root = root;
             Root.userData = this;
-
             var craftingTable = Root.Q<VisualElement>("CraftingTable");
 
             CraftingTableUIController = new CraftingTableUIController(Root, craftingTable, craftingTableInventory);
-
+            CraftingTableUIController.CraftingTableContainer.RemoveFromClassList("PlayerCraftingTable");
+            CraftingTableUIController.CraftingTableContainer.AddToClassList("WorldCraftingTable");
+            
         }
 
-        public PlayerCraftingAreaUIController()
+
+        public WorldCraftingAreaUIController()
         {
         }
 

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Controllers;
+﻿using Assets.Scripts.ItemUIControllers;
+using Assets.Scripts.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,8 @@ namespace Assets.Scripts.Interactables
         }
 
         public override void HandleRightClick(PlayerController playerController, RaycastHit hit)
-        {
-            Debug.Log("Right click on this UIInteractable produced no result");
+        {            
+            hit.collider.GetComponent<ItemUIController>().HandleUIOpen();
         }
     }
 }

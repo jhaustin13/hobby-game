@@ -14,6 +14,7 @@ namespace Assets.Scripts.ResourceManagement
                 ,{ItemIds.WoodPlank, "Images/resources_1"}
                 ,{ItemIds.Dirt, "Images/dirtblock"}
                 ,{ItemIds.CraftingTable, "Images/resources_0"}
+                ,{ItemIds.WoodWall, "Images/resources_14"}
             };
 
         public static readonly Dictionary<string, string> WorldItemPrefabPath = new Dictionary<string, string>()
@@ -22,6 +23,7 @@ namespace Assets.Scripts.ResourceManagement
                 ,{ItemIds.Dirt, "Prefabs/Items/Dirt Pickup" }
                 ,{ItemIds.CraftingTable, "Prefabs/Items/CraftingTable"}
                 ,{ItemIds.WoodPlank, "Prefabs/Items/WoodPlank" }
+                ,{ItemIds.WoodWall, "Prefabs/Items/WoodWall"}
             };
 
         public static readonly Dictionary<string, string> TerrainTexturesPath = new Dictionary<string, string>()

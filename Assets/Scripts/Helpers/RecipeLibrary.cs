@@ -13,7 +13,8 @@ namespace Assets.Scripts.Helpers
         private static Dictionary<InventoryItemData[], InventoryItemData> Recipes = new Dictionary<InventoryItemData[], InventoryItemData>(_recipeEqualityComparer)
         {
             {new InventoryItemData[] { new InventoryItemData(ItemIds.Wood,1)}, new InventoryItemData(ItemIds.WoodPlank, 2 )},
-            {new InventoryItemData[] { new InventoryItemData(ItemIds.WoodPlank,1), new InventoryItemData(ItemIds.WoodPlank, 1)}, new InventoryItemData(ItemIds.CraftingTable, 1)}
+            {new InventoryItemData[] { new InventoryItemData(ItemIds.WoodPlank,1), new InventoryItemData(ItemIds.WoodPlank, 1)}, new InventoryItemData(ItemIds.CraftingTable, 1)},
+            {new InventoryItemData[] { new InventoryItemData(ItemIds.WoodPlank,1), new InventoryItemData(ItemIds.WoodPlank,1), new InventoryItemData(ItemIds.WoodPlank,1) }, new InventoryItemData(ItemIds.WoodWall, 1) }
         };
 
         public static InventoryItemData ValidateRecipe(IEnumerable<InventoryItemData> items)

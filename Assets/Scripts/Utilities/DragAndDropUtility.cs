@@ -11,7 +11,7 @@ namespace Assets.Scripts.Utilities
 {
     public class DragAndDropUtility
     {
-        VisualElement[] Slots { get; set; }
+        List<VisualElement> Slots { get; set; }
 
         BaseUIController[] Controllers { get; set; }
 
@@ -21,13 +21,28 @@ namespace Assets.Scripts.Utilities
 
         IItemTransit ItemTransitHandler { get; set; }
 
-        public DragAndDropUtility(VisualElement[] slots, BaseUIController[] controllers, IItemTransit itemTransitHandler)
+        public DragAndDropUtility(List<VisualElement> slots, BaseUIController[] controllers, IItemTransit itemTransitHandler)
         {
             Slots = slots;
             Controllers = controllers;
             SelectionInfo = null;
             ItemTransitHandler = itemTransitHandler;
 
+            RegisterSlots(slots);
+
+            ControllerParent = Controllers[0].Parent;
+
+            for (int i = 1; i < Controllers.Length; ++i)
+            {
+                if (Controllers[i].Parent != ControllerParent)
+                {
+                    Debug.Log("Warning : Controllers parent do not match, may cause unexpected behaviors.");
+                }
+            }
+        }
+
+        private void RegisterSlots(List<VisualElement> slots)
+        {
             foreach (var slot in slots)
             {
                 slot.RegisterCallback<PointerDownEvent>(PointerDownHandlerSlot);
@@ -43,14 +58,38 @@ namespace Assets.Scripts.Utilities
                     }
                 }
             }
+        }
 
-            ControllerParent = Controllers[0].Parent;
+        public void AddSlots(List<VisualElement> slots)
+        {
+            Slots.AddRange(slots);
 
-            for (int i = 1; i < Controllers.Length; ++i)
+            RegisterSlots(slots);
+        }
+
+        public void RemoveSlots(List<VisualElement> slots)
+        {
+            var temp = slots.ToArray();
+            UnregisterSlots(slots);
+            Slots.RemoveAll(x => temp.Contains(x));
+        }
+
+        private void UnregisterSlots(List<VisualElement> slots)
+        {
+            foreach (var slot in slots)
             {
-                if (Controllers[i].Parent != ControllerParent)
+                slot.UnregisterCallback<PointerDownEvent>(PointerDownHandlerSlot);
+
+                var slotController = slot.userData as SlotUIController;
+
+                if (slotController != null && slotController.ItemUIController != null)
                 {
-                    Debug.Log("Warning : Controllers parent do not match, may cause unexpected behaviors.");
+                    var item = slotController.ItemUIController.Root;
+
+                    if (item != null)
+                    {
+                        UnregisterItem(item);
+                    }
                 }
             }
         }
@@ -131,57 +170,61 @@ namespace Assets.Scripts.Utilities
             if (SelectionInfo != null && SelectionInfo.Target.HasPointerCapture(evt.pointerId))
             {
                 var droppedSlot = FindDroppedSlot(evt);
-                var droppedSlotController = droppedSlot.userData as SlotUIController;
 
-                if (SelectionInfo.SelectedItemController.InventoryItemData.Quantity > 1)
+                if (droppedSlot != null)
                 {
-                    //if slot is empty
-                    if (droppedSlotController.ItemUIController == null)
+                    var droppedSlotController = droppedSlot.userData as SlotUIController;
+
+                    if (SelectionInfo.SelectedItemController.InventoryItemData.Quantity > 1)
                     {
-                        var slotContainer = droppedSlotController.Root.Q<VisualElement>("SlotContainer");
-                        var itemData = new InventoryItemData(SelectionInfo.SelectedItemController.InventoryItemData);
-                        itemData.TakeFromItem(SelectionInfo.SelectedItemController.InventoryItemData.Quantity - 1);
-
-                        ItemTransitHandler.OnSplitSingleItemInTransit();
-                        SelectionInfo.SelectedItemController.UpdateItemUI();
-
-                        var newItemController = new ItemUIController(slotContainer, itemData);
-                        droppedSlotController.ParentUIController.HandleAddNewItem(droppedSlotController, newItemController);
-
-                        droppedSlotController.AddItemController(newItemController);
-                        RegisterItem(newItemController.Root);
-
-                        //We are assuming any result coming back from this is from the crafting table at the moment
-                        VisualElement outputItem = droppedSlotController.ParentUIController.HandleItemDropped(droppedSlotController) as VisualElement;
-
-                        if (outputItem != null)
+                        //if slot is empty
+                        if (droppedSlotController.ItemUIController == null)
                         {
-                            RegisterItem(outputItem);
-                        }
-                    }
-                    //if slot is not empty
-                    else
-                    {
-                        if (droppedSlotController.ItemUIController.InventoryItemData.Name.Equals(SelectionInfo.SelectedItemController.InventoryItemData.Name))
-                        {
+                            var slotContainer = droppedSlotController.Root.Q<VisualElement>("SlotContainer");
                             var itemData = new InventoryItemData(SelectionInfo.SelectedItemController.InventoryItemData);
                             itemData.TakeFromItem(SelectionInfo.SelectedItemController.InventoryItemData.Quantity - 1);
 
-                            var result = droppedSlotController.ParentUIController.HandleItemCombine(itemData, droppedSlotController);
-                            if (result)
-                            {
-                                //No event fires for UI update so we need to update manually
-                                droppedSlotController.ItemUIController.UpdateItemUI();
+                            ItemTransitHandler.OnSplitSingleItemInTransit();
+                            SelectionInfo.SelectedItemController.UpdateItemUI();
 
-                                ItemTransitHandler.OnSplitSingleItemInTransit();
-                                SelectionInfo.SelectedItemController.UpdateItemUI();
+                            var newItemController = new ItemUIController(slotContainer, itemData);
+                            droppedSlotController.ParentUIController.HandleAddNewItem(droppedSlotController, newItemController);
+
+                            droppedSlotController.AddItemController(newItemController);
+                            RegisterItem(newItemController.Root);
+
+                            //We are assuming any result coming back from this is from the crafting table at the moment
+                            VisualElement outputItem = droppedSlotController.ParentUIController.HandleItemDropped(droppedSlotController) as VisualElement;
+
+                            if (outputItem != null)
+                            {
+                                RegisterItem(outputItem);
+                            }
+                        }
+                        //if slot is not empty
+                        else
+                        {
+                            if (droppedSlotController.ItemUIController.InventoryItemData.Name.Equals(SelectionInfo.SelectedItemController.InventoryItemData.Name))
+                            {
+                                var itemData = new InventoryItemData(SelectionInfo.SelectedItemController.InventoryItemData);
+                                itemData.TakeFromItem(SelectionInfo.SelectedItemController.InventoryItemData.Quantity - 1);
+
+                                var result = droppedSlotController.ParentUIController.HandleItemCombine(itemData, droppedSlotController);
+                                if (result)
+                                {
+                                    //No event fires for UI update so we need to update manually
+                                    droppedSlotController.ItemUIController.UpdateItemUI();
+
+                                    ItemTransitHandler.OnSplitSingleItemInTransit();
+                                    SelectionInfo.SelectedItemController.UpdateItemUI();
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    HandlePointerDownItemLeftClickSelection(evt);
+                    else
+                    {
+                        HandlePointerDownItemLeftClickSelection(evt);
+                    }
                 }
             }
         }

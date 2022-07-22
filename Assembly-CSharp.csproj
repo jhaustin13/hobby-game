@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Controllers\WorldController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseFirstPersonController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\@Obsolete\OrientModelToGround.cs" />
+    <Compile Include="Assets\Scripts\ItemUIControllers\ItemUIController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\BaseGroundDetection.cs" />
     <Compile Include="Assets\Scripts\Utilities\SimpleObjectPool.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUIController.cs" />
@@ -78,12 +79,14 @@
     <Compile Include="Assets\Scripts\Helpers\RecipeEqualityComparer.cs" />
     <Compile Include="Assets\Scripts\ResourceManagement\TerrainInfo.cs" />
     <Compile Include="Assets\Scripts\Controllers\FlyCameraController.cs" />
+    <Compile Include="Assets\Scripts\UI\WorldCraftingAreaUIController.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryData.cs" />
     <Compile Include="Assets\Scripts\ResourceManagement\ResourcePaths.cs" />
     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Views\MainView.cs" />
     <Compile Include="Assets\Scripts\Controllers\WorldItemController.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryItemData.cs" />
+    <Compile Include="Assets\Scripts\Data\InventoryWorldItemData.cs" />
     <Compile Include="Assets\Scripts\Utilities\DragAndDropUtility.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\GroundDetection.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseCharacterController.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="Assets\Scripts\Data\VoxelData.cs" />
     <Compile Include="Assets\Scripts\ResourceManagement\ItemInfo.cs" />
     <Compile Include="Assets\Scripts\Helpers\MarchingCubesHelper.cs" />
+    <Compile Include="Assets\Scripts\Controllers\InventoryWorldItemController.cs" />
     <Compile Include="Assets\Scripts\Interactables\UIInteractable.cs" />
     <Compile Include="Assets\Scripts\UI\SlottedUIController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\MathLibrary.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="Assets\Scripts\Data\HotbarInventoryData.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\Extensions.cs" />
     <Compile Include="Assets\Scripts\Data\Coordinate.cs" />
+    <Compile Include="Assets\Scripts\ItemUIControllers\CraftingTableItemUIController.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerCraftingAreaUIController.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -21,12 +21,16 @@ namespace Assets.Scripts.UI
 
         public InventoryData InventoryData { get; set; }
 
+        public VisualElement UpperArea { get; set; }
+
         public InventoryContainerUIController InventoryContainerUIController {get; set;}
         public HotbarUIController HotbarUIController {get; set; }
         public PlayerCraftingAreaUIController PlayerCraftingAreaUIController {get; set; }
       
 
         public DragAndDropUtility DragAndDropUtility { get; set; }
+
+        private Tuple<List<VisualElement>, BaseUIController> TemporaryUpperArea;
 
         public InventoryUIController(VisualElement root, InventoryData inventoryData)
         {          
@@ -39,6 +43,7 @@ namespace Assets.Scripts.UI
             Inventory = Root.Q<VisualElement>("Inventory");
             Hotbar = Root.Q<VisualElement>("Hotbar");
             PlayerCraftingArea = Root.Q<VisualElement>("PlayerCraftingArea");
+            UpperArea = Root.Q<VisualElement>("UpperArea");
 
             InventoryContainerUIController = new InventoryContainerUIController(Root, Inventory, InventoryData);
             HotbarUIController = new HotbarUIController(Root, Hotbar, InventoryData.Hotbar);
@@ -51,14 +56,35 @@ namespace Assets.Scripts.UI
 
             var controllers = new BaseUIController[] { InventoryContainerUIController, HotbarUIController };
 
-            DragAndDropUtility = new DragAndDropUtility(slots.ToArray(), controllers, this);
+            DragAndDropUtility = new DragAndDropUtility(slots, controllers, this);
 
             InventoryData.InventoryUpdated += InventoryData_InventoryUpdated;
         }
 
-        public void LoadUpperArea()
+        public void LoadUpperArea(BaseUIController controller, bool setTempUpperArea = true)
         {
+            PlayerCraftingArea.style.display = DisplayStyle.None;
+            UpperArea.Add(controller.Root);
+            controller.Parent = UpperArea;
 
+            if(setTempUpperArea)
+            {
+                TemporaryUpperArea = new Tuple<List<VisualElement>, BaseUIController>(null, controller);
+            }
+        }
+
+        public void LoadUpperArea(BaseUIController controller, SlotUIController[] slots)
+        {
+            LoadUpperArea(controller, false);
+            var slotVisualElements = slots.Select(x => x.Root).ToList();
+
+
+            if (slots != null)
+            {
+                DragAndDropUtility.AddSlots(slotVisualElements);
+            }
+
+            TemporaryUpperArea = new Tuple<List<VisualElement>, BaseUIController>(slotVisualElements, controller);
         }
 
         private void InventoryData_InventoryUpdated(object sender, EventArgs e)
@@ -110,6 +136,18 @@ namespace Assets.Scripts.UI
             //}
             mouseLook.SetCursorLock(!Inventory.visible);
             //CraftingTable.visible = Inventory.visible;
+
+            if(PlayerCraftingArea.style.display == DisplayStyle.None)
+            {
+                PlayerCraftingArea.style.display = DisplayStyle.Flex;
+
+
+                DragAndDropUtility.RemoveSlots(TemporaryUpperArea.Item1);
+                TemporaryUpperArea.Item2.Parent = null;
+                UpperArea.Remove(TemporaryUpperArea.Item2.Root);
+
+                TemporaryUpperArea = null;
+            }
         }
 
         public void OnTransit(InventoryItemData inventoryItemData)

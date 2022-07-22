@@ -1,9 +1,9 @@
 .PlayerCraftingTable {
-	width: 220px;
-	height: 220px;
+    width: 220px;
+    height: 220px;
 }
 
 .WorldCraftingTable {
-	width: 260px;
-	height: 260px;
+    width: 320px;
+    height: 320px;
 }

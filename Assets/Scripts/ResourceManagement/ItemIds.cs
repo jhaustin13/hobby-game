@@ -11,6 +11,7 @@ namespace Assets.Scripts.ResourceManagement
         public const string Wood = "game.wood";
         public const string Dirt = "game.terrain.dirt";
         public const string WoodPlank = "game.woodplank";
+        public const string WoodWall = "game.woodwall";
         public const string CraftingTable = "game.craftingtable";
     }
 }

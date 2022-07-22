@@ -25,6 +25,7 @@ namespace Assets.Scripts.Views
             playerController.Initialize();
 
             InventoryController = new InventoryUIController(UIDocument.rootVisualElement, playerController.PlayerData.InventoryData);
+            
         }
 
         private void Update()
@@ -48,6 +49,11 @@ namespace Assets.Scripts.Views
                 InventoryController.HotbarUIController.IncrementSelectedIndex(1);
             }
             
+        }
+
+        public MouseLook GetMouseLook()
+        {
+            return playerController.gameObject.GetComponentInParent<MouseLook>();
         }
 
         private void OnGUI()

@@ -41,7 +41,12 @@ namespace Assets.Scripts.ResourceManagement
                 case ItemIds.CraftingTable:
                     DefaultName = "Crafting Table";
                     Description = "A place to craft your items";
-                    DefaultAttributes = AttributePresets.InteractableWorldItem;
+                    DefaultAttributes = AttributePresets.CraftingTable;
+                    break;
+                case ItemIds.WoodWall:
+                    DefaultName = "Wood Wall";
+                    Description = "A wall made of generic wood";
+                    DefaultAttributes = AttributePresets.PlaceableItem;
                     break;
 
             }

@@ -12,12 +12,12 @@ namespace Assets.Scripts.Controllers
     {
         public WorldItemData WorldItemData { get; protected set; }
 
-        internal void Initialize(InventoryItemData itemInHand, Vector3 position, Quaternion rotation, ChunkData chunk)
+        public void Initialize(InventoryItemData itemInHand, Vector3 position, Quaternion rotation, ChunkData chunk)
         {
 
             WorldItemData = new WorldItemData(itemInHand, position, rotation, chunk);
 
-           
+            
 
             
         }

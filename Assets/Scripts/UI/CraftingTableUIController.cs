@@ -15,19 +15,21 @@ namespace Assets.Scripts.UI
 
         public SlotUIController CraftingOutputController { get; set; }
 
+        public VisualElement CraftingTableContainer { get; set; }
+
         public CraftingTableUIController(VisualElement parent, VisualElement root, BaseInventoryData baseInventoryData) : base(baseInventoryData)
         {
             Parent = parent;
             Root = root;
             
             Root.userData = this;
-            var craftingTableContainer = Root.Q<VisualElement>("CraftingTableContainer");
-            craftingTableContainer.AddToClassList("PlayerCraftingTable");
+            CraftingTableContainer = Root.Q<VisualElement>("CraftingTableContainer");
+            CraftingTableContainer.AddToClassList("PlayerCraftingTable");
             CraftTableOutput = Root.Q<VisualElement>("OutputContainer");            
 
             for (int i = 0; i < InventoryData.Size; ++i)
             {
-                Slots[i] = new SlotUIController(craftingTableContainer, null, i);
+                Slots[i] = new SlotUIController(CraftingTableContainer, null, i);
                 Slots[i].ParentUIController = this;
             }
 

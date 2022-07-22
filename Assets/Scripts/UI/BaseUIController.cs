@@ -18,7 +18,7 @@ namespace Assets.Scripts.UI
             Parent = parent;
             Root = source.Instantiate();
 
-            Parent.Add(Root);
+            Parent?.Add(Root);
             Root.visible = true;
             Root.userData = this;
 
