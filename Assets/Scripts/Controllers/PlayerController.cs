@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Controllers;
 using Assets.Scripts.Interactables;
+using Assets.Scripts.ResourceManagement;
 using Assets.Scripts.Views;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,9 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerData PlayerData;
 
-    private VoxelController ActiveVoxel;
+    public GameObject BuildPreview;
+
+    private ItemInfo SelectedItemInfo;
     
     void Awake()
     {
@@ -82,6 +85,20 @@ public class PlayerController : MonoBehaviour
                         }
                     }
                 }
+                else if (Input.GetKeyDown(KeyCode.Z))
+                {
+                    if(BuildPreview != null)
+                    {
+                        BuildPreview.transform.Rotate(BuildPreview.transform.up, 45);
+                    }
+                }
+                else if(Input.GetKeyDown(KeyCode.X))
+                {
+                    if (BuildPreview != null)
+                    {
+                        BuildPreview.transform.Rotate(BuildPreview.transform.up, -45);
+                    }
+                }
                 else
                 {
                     if(hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
@@ -99,47 +116,51 @@ public class PlayerController : MonoBehaviour
                         }
 
                         var centroid = MeshHelper.GetCentroid(points.ToArray());
-                        
-                        //var meshFilter = currentChunk.GetComponent<MeshFilter>();
-                        //var triangles = meshFilter.mesh.triangles;
+                        var selectedItem = PlayerData.InventoryData.Hotbar.Items[PlayerData.InventoryData.Hotbar.SelectedIndex];
 
-
-                        //var p0 = meshFilter.mesh.vertices[triangles[hitInfo.triangleIndex * 3 + 0]];
-                        //var p1 = meshFilter.mesh.vertices[triangles[hitInfo.triangleIndex * 3 + 1]];
-                        //var p2 = meshFilter.mesh.vertices[triangles[hitInfo.triangleIndex * 3 + 2]];
-
-                        //p0 = p0 + currentChunk.transform.position;
-                        //p1 = p1 + currentChunk.transform.position;
-                        //p2 = p2 + currentChunk.transform.position;
-
-                        //Debug.DrawLine(p0, p1, Color.red, 1000f);
-                        //Debug.DrawLine(p1, p2, Color.red, 1000f);
-                        //Debug.DrawLine(p2, p0, Color.red, 1000f);
-
-
-
-                        if (ActiveVoxel == null)
+                        if (BuildPreview == null)
                         {
-                            var voxel = Instantiate(currentChunk.voxelPrefab);
-                            var voxelController = voxel.GetComponent<VoxelController>();
-                            voxelController.debug = true;
-                            voxelController.Initialize(voxelData);
-                            voxelController.transform.position = currentChunk.transform.position + centroid;
-                            ActiveVoxel = voxelController;
+                            if (selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
+                            {
+                                var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id);
+                                if(itemInfo.ItemPrefab != null)
+                                {
+                                    BuildPreview = Instantiate(itemInfo.ItemPrefab);
+                                    BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
+                                    BuildPreview.GetComponent<Collider>().enabled = false;
+                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                                    SelectedItemInfo = itemInfo;
+                                }
+                            }
+                          
+                        
                         }
                         else
                         {
-                            if (ActiveVoxel.GetVoxelData().Position != centroid)
+                            if(selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
                             {
-                                Destroy(ActiveVoxel.gameObject);
+                                var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id); 
+                                if(SelectedItemInfo.Id != itemInfo.Id)
+                                {
+                                    Destroy(BuildPreview);
 
-                                var voxel = Instantiate(currentChunk.voxelPrefab);
-                                var voxelController = voxel.GetComponent<VoxelController>();
-                                voxelController.debug = true;
-                                voxelController.Initialize(voxelData);
-                                voxelController.transform.position = currentChunk.transform.position + centroid;
-                                ActiveVoxel = voxelController;
+                                    BuildPreview = Instantiate(itemInfo.ItemPrefab);
+                                    BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
+                                    BuildPreview.GetComponent<Collider>().enabled = false;
+                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                                    SelectedItemInfo = itemInfo;
+                                }
+                                else
+                                {
+                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                                }
                             }
+                            else
+                            {
+                                Destroy(BuildPreview);
+                                BuildPreview = null;
+                            }
+                            
                         }
 
                     }

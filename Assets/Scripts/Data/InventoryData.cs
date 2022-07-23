@@ -192,6 +192,7 @@ public class InventoryData
         if (selectedItem.Quantity <= 0)
         {
             selectedItem = null;
+            Hotbar.Items[Hotbar.SelectedIndex] = null;
         }
 
         OnInventoryUpdated(new InventoryUpdatedEventArgs(selectedItem, true, Hotbar.SelectedIndex));

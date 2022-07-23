@@ -144,9 +144,10 @@ public class WorldController : MonoBehaviour
 
     public WorldItemController PlaceItemInWorld(Vector3 position, Quaternion rotation, ChunkController chunkController, InventoryItemData inventoryItemData)
     {
-        var itemInfo = ResourceCache.Instance.GetItemInfo(inventoryItemData.Id); 
-        
-        var itemPosition = position + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0) ;
+        var itemInfo = ResourceCache.Instance.GetItemInfo(inventoryItemData.Id);
+
+        // var itemPosition = position + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0) ;
+        var itemPosition = position;
         WorldItemData newItem = new WorldItemData(inventoryItemData, itemPosition, rotation, chunkController.ChunkData);
 
         var placeableItem = Instantiate(itemInfo.ItemPrefab,itemPosition, rotation, chunkController.transform);      

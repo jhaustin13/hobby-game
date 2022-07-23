@@ -86,9 +86,18 @@ namespace Assets.Scripts.Interactables
                             //TODO : create a lookup for placeable item prefabs
                             var itemInfo = ResourceCache.Instance.GetItemInfo(itemInHand.Id);
                             if(itemInfo.ItemPrefab != null)
-                            {                               
+                            {
+                                Vector3 pointToPlace = hitInfo.point;
+                                Quaternion rotationToPlace = Quaternion.identity;
                                 //worldItemController.Initialize(itemInHand, itemPosition, Quaternion.identity, chunkController.ChunkData);
-                                worldController.PlaceItemInWorld(hitInfo.point, Quaternion.identity, chunkController, itemInHand);
+                                if(playerController.BuildPreview != null)
+                                {
+                                    pointToPlace = playerController.BuildPreview.transform.position;
+                                    rotationToPlace = playerController.BuildPreview.transform.rotation;
+                                }
+
+
+                                worldController.PlaceItemInWorld(pointToPlace, rotationToPlace, chunkController, itemInHand);
                             }
                                                           
                         }
