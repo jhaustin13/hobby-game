@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5838936053433813146}
   - component: {fileID: 3837692650462860370}
   - component: {fileID: -6890113843981875110}
+  - component: {fileID: -4126120044044024498}
   m_Layer: 0
   m_Name: WoodWall
   m_TagString: Untagged
@@ -108,5 +109,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e125025af7c17af43bffcf5afd02b386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-4126120044044024498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5799645281184109680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75b4da5a717bc2d40930f15229df31e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -301,5 +301,94 @@ public class MeshHelper
 
         return new Bounds(bounds.center, new Vector3(maxX * 2, maxY * 2, maxZ * 2));
     }
+
+    public static void SnapObjectToHitPoint(RaycastHit hit, GameObject targetObject)
+    {
+        // Get the closest point on the mesh to the hit point
+        Mesh mesh = null;
+        Renderer renderer = targetObject.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            if (renderer is SkinnedMeshRenderer)
+            {
+                mesh = ((SkinnedMeshRenderer)renderer).sharedMesh;
+            }
+            else if (renderer is MeshRenderer)
+            {
+                MeshFilter meshFilter = targetObject.GetComponent<MeshFilter>();
+                if (meshFilter != null)
+                {
+                    mesh = meshFilter.sharedMesh;
+                }
+            }
+        }
+        if (mesh == null)
+        {
+            Debug.LogError("Target object does not have a valid mesh!");
+            return;
+        }
+
+        Vector3 closestVertex = mesh.vertices[0];
+        float closestDistance = Mathf.Infinity;
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            Vector3 vertex = targetObject.transform.TransformPoint(mesh.vertices[i]);
+            float distance = Vector3.Distance(hit.point, vertex);
+            if (distance < closestDistance)
+            {
+                closestVertex = vertex;
+                closestDistance = distance;
+            }
+        }
+
+        // Get the orientation and size of the target object
+        Quaternion targetRotation = targetObject.transform.rotation;
+        Vector3 targetScale = targetObject.transform.localScale;
+        Vector3 targetSize = Vector3.Scale(targetObject.GetComponent<MeshFilter>().sharedMesh.bounds.size, targetScale);
+
+        // Calculate the offset between the center of the target object and the closest vertex
+        Vector3 targetOffset = closestVertex - targetObject.transform.position;
+
+        // Calculate the position of the target object so that its edge is touching the edge of the hit object
+        Vector3 hitNormal = hit.normal;
+        Vector3 hitPoint = hit.point;
+        Vector3 targetPosition = hitPoint + (hitNormal * (targetSize.magnitude / 2));
+
+        // Apply the calculated position and orientation to the target object
+        targetObject.transform.position = targetPosition + (targetRotation * targetOffset);
+        targetObject.transform.rotation = targetRotation;
+
+        // Move the target object slightly along the hit normal to ensure it is touching the surface
+        targetObject.transform.position += hitNormal * 0.01f;
+    }
+
+    public static bool IsPointOnPlane(Vector3 planeNormal, Vector3 planePoint, Vector3 pointToTest)
+    {
+        // Solve for d
+        float d = -Vector3.Dot(planeNormal, planePoint);
+
+        // Test if the point is on the plane
+        float result = Vector3.Dot(planeNormal, pointToTest) + d;
+        return Mathf.Approximately(result, 0f);
+    }
+
+
+
+    private static int GetOverlap(Mesh mesh, Transform transform, Vector3 position, Quaternion rotation)
+    {
+        int overlap = 0;
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            Vector3 vertex = transform.TransformPoint(mesh.vertices[i]);
+            Vector3 direction = (vertex - position).normalized;
+            Vector3 rotatedVertex = rotation * mesh.vertices[i];
+            Vector3 direction2 = (position + rotatedVertex - position).normalized;
+            if (Vector3.Dot(direction, direction2) > 0.9f)
+            {
+                overlap++;
+            }
+        }
+        return overlap;
+    }
 }
 

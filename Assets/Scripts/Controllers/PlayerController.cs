@@ -12,12 +12,16 @@ public class PlayerController : MonoBehaviour
     public PlayerData PlayerData;
 
     public GameObject BuildPreview;
-
-    private ItemInfo SelectedItemInfo;
     
     void Awake()
     {
         Initialize();
+        
+    }
+
+    private void Start()
+    {
+        
     }
 
     public void Initialize()
@@ -101,69 +105,15 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    if(hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo))
                     {
-                        
-                        var currentChunk = hitInfo.collider.gameObject.GetComponent<ChunkController>();
-                        var voxelData = currentChunk.TriVoxelMap[hitInfo.triangleIndex];
-
-                        var voxels = currentChunk.ChunkData.GetRelatedVoxelsAtVoxel(voxelData);
-                        var points = new List<Vector3>();
-
-                        foreach(var voxel in voxels.First)
+                        Interactable interactable = hitInfo.collider.gameObject.GetComponent<Interactable>();
+                        if (interactable != null)
                         {
-                            points.Add(voxel.Position);
+                            interactable.HandleLook(this, hitInfo);
                         }
-
-                        var centroid = MeshHelper.GetCentroid(points.ToArray());
-                        var selectedItem = PlayerData.InventoryData.Hotbar.Items[PlayerData.InventoryData.Hotbar.SelectedIndex];
-
-                        if (BuildPreview == null)
-                        {
-                            if (selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
-                            {
-                                var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id);
-                                if(itemInfo.ItemPrefab != null)
-                                {
-                                    BuildPreview = Instantiate(itemInfo.ItemPrefab);
-                                    BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
-                                    BuildPreview.GetComponent<Collider>().enabled = false;
-                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
-                                    SelectedItemInfo = itemInfo;
-                                }
-                            }
-                          
-                        
-                        }
-                        else
-                        {
-                            if(selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
-                            {
-                                var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id); 
-                                if(SelectedItemInfo.Id != itemInfo.Id)
-                                {
-                                    Destroy(BuildPreview);
-
-                                    BuildPreview = Instantiate(itemInfo.ItemPrefab);
-                                    BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
-                                    BuildPreview.GetComponent<Collider>().enabled = false;
-                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
-                                    SelectedItemInfo = itemInfo;
-                                }
-                                else
-                                {
-                                    BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
-                                }
-                            }
-                            else
-                            {
-                                Destroy(BuildPreview);
-                                BuildPreview = null;
-                            }
-                            
-                        }
-
                     }
+                    
                 }
             }
         }

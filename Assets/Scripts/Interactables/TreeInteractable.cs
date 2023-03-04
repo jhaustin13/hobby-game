@@ -53,5 +53,10 @@ namespace Assets.Scripts.Interactables
         {
             
         }
+
+        public override void HandleLook(PlayerController playerController, RaycastHit hit)
+        {
+            
+        }
     }
 }

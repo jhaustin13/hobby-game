@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 4818039048400265410}
   - component: {fileID: 5494407019215391138}
   - component: {fileID: -1620298618902244483}
+  - component: {fileID: 4425503322472767283}
+  - component: {fileID: -8941721640658853323}
   m_Layer: 0
   m_Name: CraftingTable
   m_TagString: Untagged
@@ -134,5 +136,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 028c1c2ac4371a14fb237d827ab4cf40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4425503322472767283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535273061148972834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff15725b6477dd4eb2cb14859947300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8941721640658853323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535273061148972834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75b4da5a717bc2d40930f15229df31e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

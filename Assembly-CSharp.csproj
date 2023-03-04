@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\Data\InventoryWorldItemData.cs" />
     <Compile Include="Assets\Scripts\Utilities\DragAndDropUtility.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\GroundDetection\GroundDetection.cs" />
+    <Compile Include="Assets\Scripts\Interactables\BuildingInteractable.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Controllers\BaseCharacterController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Components\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\Helpers\RecipeLibrary.cs" />
@@ -106,9 +107,9 @@
     <Compile Include="Assets\Scripts\ResourceManagement\ItemInfo.cs" />
     <Compile Include="Assets\Scripts\Helpers\MarchingCubesHelper.cs" />
     <Compile Include="Assets\Scripts\Controllers\InventoryWorldItemController.cs" />
-    <Compile Include="Assets\Scripts\Interactables\UIInteractable.cs" />
     <Compile Include="Assets\Scripts\UI\SlottedUIController.cs" />
     <Compile Include="Assets\Easy Character Movement\Scripts\Common\MathLibrary.cs" />
+    <Compile Include="Assets\Scripts\Interactables\UIInteractable.cs" />
     <Compile Include="Assets\Scripts\Data\WorldData.cs" />
     <Compile Include="Assets\Scripts\Models\MeshSkeletonVoxelModel.cs" />
     <Compile Include="Assets\Scripts\Data\InventoryItemPlacementInfo.cs" />

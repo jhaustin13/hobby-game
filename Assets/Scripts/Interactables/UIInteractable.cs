@@ -17,6 +17,11 @@ namespace Assets.Scripts.Interactables
             Debug.Log("Left click on this UIInteractable produced no result");
         }
 
+        public override void HandleLook(PlayerController playerController, RaycastHit hit)
+        {
+            
+        }
+
         public override void HandleMiddleClick(PlayerController playerController, RaycastHit hit)
         {
             //throw new NotImplementedException();

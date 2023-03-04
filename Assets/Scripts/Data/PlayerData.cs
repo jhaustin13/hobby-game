@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.ResourceManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ public class PlayerData
     public PlayerData()
     {
         InventoryData = new InventoryData(10,10,4);
+        
     }
 }
 

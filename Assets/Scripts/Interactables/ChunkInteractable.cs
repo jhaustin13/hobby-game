@@ -11,6 +11,7 @@ namespace Assets.Scripts.Interactables
 {
     public class ChunkInteractable : Interactable
     {
+        private ItemInfo selectedItemInfo;
         public override void HandleLeftClick(PlayerController playerController, RaycastHit hitInfo)
         {
             if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
@@ -149,6 +150,74 @@ namespace Assets.Scripts.Interactables
                     }
                 }
 
+
+            }
+        }
+
+        public override void HandleLook(PlayerController playerController, RaycastHit hitInfo)
+        {
+            ItemInfo selectedItemInfo = null;
+            if (hitInfo.collider.gameObject.GetComponent<ChunkController>() != null)
+            {
+
+                var currentChunk = hitInfo.collider.gameObject.GetComponent<ChunkController>();
+                var voxelData = currentChunk.TriVoxelMap[hitInfo.triangleIndex];
+
+                var voxels = currentChunk.ChunkData.GetRelatedVoxelsAtVoxel(voxelData);
+                var points = new List<Vector3>();
+
+                foreach (var voxel in voxels.First)
+                {
+                    points.Add(voxel.Position);
+                }
+
+                var centroid = MeshHelper.GetCentroid(points.ToArray());
+                var selectedItem = playerController.PlayerData.InventoryData.Hotbar.Items[playerController.PlayerData.InventoryData.Hotbar.SelectedIndex];
+
+                if (playerController.BuildPreview == null)
+                {
+                    if (selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
+                    {
+                        var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id);
+                        if (itemInfo.ItemPrefab != null)
+                        {
+                            playerController.BuildPreview = Instantiate(itemInfo.ItemPrefab);
+                            playerController.BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
+                            playerController.BuildPreview.GetComponent<Collider>().enabled = false;
+                            playerController.BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                            selectedItemInfo = itemInfo;
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    if (selectedItem != null && selectedItem.Attributes.Contains(Attributes.Placeable))
+                    {
+                        var itemInfo = ResourceCache.Instance.GetItemInfo(selectedItem.Id);
+                        if (selectedItemInfo != null && selectedItemInfo.Id != itemInfo.Id)
+                        {
+                            Destroy(playerController.BuildPreview);
+
+                            playerController.BuildPreview = Instantiate(itemInfo.ItemPrefab);
+                            playerController.BuildPreview.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/TransparentGreen");
+                            playerController.BuildPreview.GetComponent<Collider>().enabled = false;
+                            playerController.BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                            selectedItemInfo = itemInfo;
+                        }
+                        else
+                        {
+                            playerController.BuildPreview.transform.position = currentChunk.transform.position + centroid + new Vector3(0, itemInfo.Bounds.extents.y * itemInfo.ItemPrefab.transform.localScale.y, 0);
+                        }
+                    }
+                    else
+                    {
+                        Destroy(playerController.BuildPreview);
+                        playerController.BuildPreview = null;
+                    }
+
+                }
 
             }
         }

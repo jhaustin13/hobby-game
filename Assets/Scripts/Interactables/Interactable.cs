@@ -20,6 +20,8 @@ namespace Assets.Scripts.Interactables
         // For right click specifically we need to indentify the voxel that we want to perform and action on
         // and if its something simple like placing an object this interactable can handle that
         public abstract void HandleRightClick(PlayerController playerController, RaycastHit hit);
+
+        public abstract void HandleLook(PlayerController playerController, RaycastHit hit);
        
     }
 }

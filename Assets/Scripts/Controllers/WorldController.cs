@@ -105,7 +105,7 @@ public class WorldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     public Coordinate GetChunkIndex(ChunkController chunkController)
