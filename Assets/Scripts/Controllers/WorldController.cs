@@ -1,10 +1,13 @@
 ﻿using Assets.Scripts.Controllers;
 using Assets.Scripts.Data;
+using Assets.Scripts.Helpers;
 using Assets.Scripts.ItemUIControllers;
 using Assets.Scripts.ResourceManagement;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class WorldController : MonoBehaviour
 {
@@ -15,12 +18,18 @@ public class WorldController : MonoBehaviour
     public GameObject chunkPrefab;
 
     private int selectedState = 0;
-    private int numOfTrees = 100;
+    private int numOfTrees = 1000;
 
     public ChunkController[,,] Chunks;
     public WorldData worldData;
 
+    public ChunkLoader ChunkLoader;
+
+    public SimpleObjectPool ChunkPool;
+
     public FastNoise FastNoise;
+
+    public Vector3 Spawn;
 
     private enum VFace
     {
@@ -35,72 +44,164 @@ public class WorldController : MonoBehaviour
 
     void Awake()
     {
+        Stopwatch stopwatch = new Stopwatch();
+        Stopwatch segStopwatch = new Stopwatch();
+
+        ChunkLoader = new ChunkLoader(this);
+
+        Spawn = Vector3.one * 5;
+
+        ChunkPool = new SimpleObjectPool();
+        ChunkPool.prefab = chunkPrefab;
+
         FastNoise = new FastNoise();
         worldData = new WorldData(SizeX, SizeY, SizeZ, 24, .5f);
+        float loadDistance = 5 * 12; //12 is the chunk size, so load distance is radius of 5 chunks or so
+        //World Data only should be allocating memory for the chunks closest to the spawn location
+        //instead of creating everything here we need to prioritize creating chunks closest to the player
+        //only blocking at the beginning to load the chunks underneath the player or the spawn location
+
+        //Okay so next steps
+        //Memory allocation and object instantiating need to happen on the made thread
+        //So all remaining chunks that need memory to be allocated and initialized should be
+        //moved into a priority queue that will execute for some time during the update
+        
+        //The voxel setting and the mesh tasks should be attempted to be moved off of the main thread
+        //and into the async parallel process, the only issue will be making sure that the mesh refresh call
+        //only gets queued when the surrounding chunks have been initialized, so either we need a list of every chunk
+        //or something that checks chunks that aren't ready and tries to put them on the queue to be processed
+
+
         //FastNoise.SetFrequency(100);
 
+        segStopwatch.Start();
+        stopwatch.Start();
         Chunks = new ChunkController[SizeX, SizeY, SizeZ];
-
+        int initializedChunks = 0;
         for (int y = 0; y < SizeY; ++y)
         {
             for (int z = 0; z < SizeZ; ++z)
             {
                 for (int x = 0; x < SizeX; ++x)
                 {
-                    GameObject newChunk = Instantiate(chunkPrefab);
-                    ChunkController chunkController = newChunk.GetComponent<ChunkController>();
-                    chunkController.transform.parent = transform;
-                    chunkController.Initialize(worldData.Chunks[x, y, z], x ,y ,z);                   
+                    float distanceFromSpawn = float.MaxValue;
 
-                    Chunks[x, y, z] = chunkController;                    
-                }
-            }
-        }
-
-        for (int y = 0; y < SizeY; ++y)
-        {
-            for (int z = 0; z < SizeZ; ++z)
-            {
-                for (int x = 0; x < SizeX; ++x)
-                {
-                    Chunks[x, y, z].SetChunkVoxelTerrain();
-                }
-            }
-        }
-        List<ChunkController> chunks = new List<ChunkController>();
-
-        for (int y = 0; y < SizeY; ++y)
-        {
-            for (int z = 0; z < SizeZ; ++z)
-            {
-                for (int x = 0; x < SizeX; ++x)
-                {
-                    Chunks[x, y, z].RefreshChunkMesh();
-
-                    MeshFilter meshFilter = Chunks[x, y, z].GetComponent<MeshFilter>();
-                    if (meshFilter != null && meshFilter.mesh.vertexCount > 0)
+                    if (worldData.Chunks[x,y,z] != null)
                     {
-                        chunks.Add(Chunks[x, y, z]);
+                        distanceFromSpawn = Vector3.Distance(worldData.Chunks[x, y, z].Position, Spawn);
                     }
+
+                    if (worldData.Chunks[x, y, z] != null && distanceFromSpawn < loadDistance)
+                    {
+                        //worldData.Chunks[x, y, z].InitializeVoxels();
+
+                        //GameObject newChunk = ChunkPool.GetObject();
+                        //ChunkController chunkController = newChunk.GetComponent<ChunkController>();
+                        //chunkController.transform.parent = transform;
+
+                        //chunkController.Initialize(worldData.Chunks[x, y, z], x, y, z);
+
+                        //Chunks[x, y, z] = chunkController;
+                        //Chunks[x, y, z].SetChunkVoxelTerrain();
+                        ChunkLoader.LoadChunk(worldData.Chunks[x, y, z], -1);
+                        initializedChunks++;
+                    }
+                    else 
+                    {
+                        ChunkLoader.ChunkQueue.Enqueue(worldData.Chunks[x, y, z], distanceFromSpawn);
+                    }
+
+
                 }
             }
         }
 
-        
+        segStopwatch.Stop();
+        Debug.Log($"Took {segStopwatch.ElapsedMilliseconds / 1000} seconds to instantiate {SizeX * SizeY * SizeZ} chunk controllers.");
 
-        for(int i = 0; i < numOfTrees; ++i)
+        Debug.Log($"Chunks initialized {initializedChunks}");
+
+        Debug.Log($"Chunks queueed {ChunkLoader.ChunkQueue.Count}");
+       // segStopwatch.Restart();
+
+
+        //for (int y = 0; y < SizeY; ++y)
+        //{
+        //    for (int z = 0; z < SizeZ; ++z)
+        //    {
+        //        for (int x = 0; x < SizeX; ++x)
+        //        {
+                    
+        //        }
+        //    }
+        //}
+
+        //segStopwatch.Stop();
+        //Debug.Log($"Took {segStopwatch.ElapsedMilliseconds / 1000} seconds to set {SizeX * SizeY * SizeZ} chunks voxel terrain.");
+        segStopwatch.Restart();
+
+        //List<ChunkController> chunks = new List<ChunkController>();
+
+        for (int y = 0; y < SizeY; ++y)
         {
-            int randomChunk = Mathf.FloorToInt(Random.Range(0, chunks.Count));
+            for (int z = 0; z < SizeZ; ++z)
+            {
+                for (int x = 0; x < SizeX; ++x)
+                {                    
+                    if(Chunks[x,y,z] != null)
+                    {
+                        if (Chunks[x,y,z].ChunkData.Position == new Vector3(24.00f, 0.00f, 60.00f))
+                        {
+                            //Debug.Log("This chunk breaks for some reason");
+                        }
 
-            var vertices = chunks[randomChunk].GetComponent<MeshFilter>().mesh.vertices;
+                        if(Chunks[x, y, z].IsReadyForRefresh())
+                        {
+                            Chunks[x, y, z].RefreshChunkMesh();
+                        }
+                        else
+                        {
+                            if (Chunks[x, y, z].State == ChunkController.ChunkState.Setup)
+                            {
+                                ChunkLoader.ChunkCheckQueue.Add(Chunks[x, y, z]);
+                            }
+                        }
+                    }
 
-            int randomVertex = Mathf.FloorToInt(Random.Range(0, vertices.Length));
-
-            GameObject tree = Instantiate(Resources.Load<GameObject>("Trees/Test Tree"));
-            tree.transform.parent = chunks[randomChunk].transform;
-            tree.transform.localPosition = vertices[randomVertex];
-            tree.transform.rotation = Quaternion.Euler(0,Random.Range(0, 360),0);
+                    
+                  
+                    
+                    
+                    //MeshFilter meshFilter = Chunks[x, y, z].GetComponent<MeshFilter>();
+                    //if (meshFilter != null && meshFilter.mesh.vertexCount > 0)
+                    //{
+                    //    chunks.Add(Chunks[x, y, z]);
+                    //}
+                }
+            }
         }
+
+        segStopwatch.Stop();
+        Debug.Log($"Took {segStopwatch.ElapsedMilliseconds / 1000} seconds to refresh {SizeX * SizeY * SizeZ} chunks mesh.");
+        stopwatch.Stop();
+        Debug.Log($"Took {stopwatch.ElapsedMilliseconds / 1000} seconds to generate {SizeX * SizeY * SizeZ} chunks.");
+
+        //stopwatch.Restart();
+        //for(int i = 0; i < numOfTrees; ++i)
+        //{
+        //    int randomChunk = Mathf.FloorToInt(Random.Range(0, chunks.Count));
+
+        //    var vertices = chunks[randomChunk].GetComponent<MeshFilter>().mesh.vertices;
+
+        //    int randomVertex = Mathf.FloorToInt(Random.Range(0, vertices.Length));
+
+        //    GameObject tree = Instantiate(Resources.Load<GameObject>("Trees/Test Tree"));
+        //    tree.transform.parent = chunks[randomChunk].transform;
+        //    tree.transform.localPosition = vertices[randomVertex];
+        //    tree.transform.rotation = Quaternion.Euler(0,Random.Range(0, 360),0);
+        //}
+        //stopwatch.Stop();
+        //Debug.Log($"Took {stopwatch.ElapsedMilliseconds / 1000} seconds to generate {numOfTrees} trees.");
     }
     // Start is called before the first frame update
     void Start()
@@ -121,8 +222,15 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(ChunkLoader.ChunkQueue.Count > 0)
+        {
+            Debug.Log($"Processing Chunk Queue {ChunkLoader.ChunkQueue.Count} Chunks");
+            ChunkLoader.ProcessChunkQueue();
+        }
         
-    }
+
+        //ChunkLoader.StartProcessor();
+    }   
 
     public ChunkController GetChunkRelativeToChunk(ChunkController originChunk, Coordinate offset)
     {

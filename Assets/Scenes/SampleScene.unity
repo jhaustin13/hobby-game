@@ -409,6 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7076dda4d1a474a9ce69af66fab2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuildPreview: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,11 +627,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4b147511fffab4cbd8d8be7ecf2435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SizeX: 5
-  SizeY: 3
-  SizeZ: 5
+  SizeX: 8
+  SizeY: 32
+  SizeZ: 8
   chunkPrefab: {fileID: 2264613333255277703, guid: 7b252f0e44e25ff46964a789fbd8c27b,
     type: 3}
+  ChunkPool: {fileID: 0}
+  Spawn: {x: 0, y: 0, z: 0}
 --- !u!4 &1720000093
 Transform:
   m_ObjectHideFlags: 0

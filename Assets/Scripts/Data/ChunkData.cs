@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 [Serializable]
 public class ChunkData
 {
@@ -13,16 +14,33 @@ public class ChunkData
     public VoxelData[,,] Voxels { get; }
     public float VoxelSize { get; }
     public List<WorldItemData> Items { get; set; }
+    public bool AllAir { get; set; }
+
     public ChunkData(WorldData parent, Vector3 position, int resolution, float voxelSize)
     {
         this.Position = position;
         this.Resolution = resolution;
         this.VoxelSize = voxelSize;
         this.ParentWorld = parent;
+        this.AllAir = true;
         Items = new List<WorldItemData>();
 
         Voxels = new VoxelData[resolution, resolution, resolution];
 
+        for (int y = 0; y < Resolution; ++y)
+        {
+            for (int z = 0; z < Resolution; ++z)
+            {
+                for (int x = 0; x < Resolution; ++x)
+                {
+                    Voxels[x, y, z] = null;
+                }
+            }
+        }
+    }
+
+    public void InitializeVoxels()
+    {
         for (int y = 0; y < Resolution; ++y)
         {
             for (int z = 0; z < Resolution; ++z)

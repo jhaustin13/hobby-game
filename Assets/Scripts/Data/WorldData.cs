@@ -12,7 +12,8 @@ public class WorldData
     public Vector3 Position { get; }
 
     public ChunkData[,,] Chunks { get; }
-
+    public int ChunkResolution { get; }
+    public float VoxelSize { get; }
     public FastNoise FastNoise { get; }
 
     public int SizeX;
@@ -23,26 +24,47 @@ public class WorldData
     public WorldData(int sizeX, int sizeY, int sizeZ, int chunkResolution, float voxelSize)
     {
         Chunks = new ChunkData[sizeX, sizeY, sizeZ];
-        float offset = chunkResolution * voxelSize;
+
+        ChunkResolution = chunkResolution;
+        VoxelSize = voxelSize;      
 
         SizeX = sizeX;
         SizeY = sizeY;
         SizeZ = sizeZ;
 
+        float loadDistance = 5 * 12; //12 is the chunk size, so load distance is radius of 5 chunks or so
+
+
         Position = Vector3.zero;
         FastNoise = new FastNoise();
+
+        float offset = ChunkResolution * VoxelSize;
 
         for (int y = 0; y < sizeY; ++y)
         {
             for (int z = 0; z < sizeZ; ++z)
             {
                 for (int x = 0; x < sizeX; ++x)
-                {                   
-                    Chunks[x, y, z] = new ChunkData(this,new Vector3(x * offset, y * offset, z * offset), chunkResolution, voxelSize);
+                {
+                    Vector3 chunkPosition = new Vector3(x * offset, y * offset, z * offset);
+                    Chunks[x, y, z] = new ChunkData(this,chunkPosition , ChunkResolution, VoxelSize);
+                    //if (Vector3.Distance(chunkPosition, Vector3.one * 5) < loadDistance)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    Chunks[x, y, z] = null;
+                    //}
+
                 }
             }
-        }
-        
+        }        
+    }
+
+    public void InitializeChunk(int x, int y, int z)
+    {
+        float offset = ChunkResolution * VoxelSize;
+        Chunks[x, y, z] = new ChunkData(this, new Vector3(x * offset, y * offset, z * offset), ChunkResolution, VoxelSize);
     }
 
     public ChunkData GetChunkRelativeToChunk(ChunkData originChunk, Coordinate offset)
