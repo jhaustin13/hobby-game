@@ -18,7 +18,7 @@ public class WorldController : MonoBehaviour
     public GameObject chunkPrefab;
 
     private int selectedState = 0;
-    private int numOfTrees = 1000;
+    private int numOfTrees = 5;
 
     public ChunkController[,,] Chunks;
     public WorldData worldData;
@@ -186,22 +186,22 @@ public class WorldController : MonoBehaviour
         stopwatch.Stop();
         Debug.Log($"Took {stopwatch.ElapsedMilliseconds / 1000} seconds to generate {SizeX * SizeY * SizeZ} chunks.");
 
-        //stopwatch.Restart();
-        //for(int i = 0; i < numOfTrees; ++i)
+        stopwatch.Restart();
+        //for (int i = 0; i < 10; ++i)
         //{
-        //    int randomChunk = Mathf.FloorToInt(Random.Range(0, chunks.Count));
+        //    //int randomChunk = Mathf.FloorToInt(Random.Range(0, chunks.Count));
 
-        //    var vertices = chunks[randomChunk].GetComponent<MeshFilter>().mesh.vertices;
+        //    var vertices = Chunks[0,0,4].GetComponent<MeshFilter>().mesh.vertices;
 
         //    int randomVertex = Mathf.FloorToInt(Random.Range(0, vertices.Length));
 
         //    GameObject tree = Instantiate(Resources.Load<GameObject>("Trees/Test Tree"));
-        //    tree.transform.parent = chunks[randomChunk].transform;
+        //    tree.transform.parent = Chunks[0, 0, 4].transform;
         //    tree.transform.localPosition = vertices[randomVertex];
-        //    tree.transform.rotation = Quaternion.Euler(0,Random.Range(0, 360),0);
+        //    tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
         //}
-        //stopwatch.Stop();
-        //Debug.Log($"Took {stopwatch.ElapsedMilliseconds / 1000} seconds to generate {numOfTrees} trees.");
+        stopwatch.Stop();
+        Debug.Log($"Took {stopwatch.ElapsedMilliseconds / 1000} seconds to generate {numOfTrees} trees.");
     }
     // Start is called before the first frame update
     void Start()
