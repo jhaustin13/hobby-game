@@ -15,3 +15,6 @@ The intention with hobby-game was to be the game I worked on whenever I felt the
 - There is an attempt at multithreading the chunk loading of the terrain.
 
 - The rest are various pieces in need of work
+
+  If you have questions reach out to me on twitter at https://twitter.com/jhaustin13
+  I'll try to respond if I can. Life is busy!
